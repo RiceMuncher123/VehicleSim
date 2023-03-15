@@ -14,6 +14,7 @@ public class DumpTruck extends Vehicle
         isConstructionVehicle = true;
         maxSpeed = 3;
         speed = maxSpeed;
+        savedMaxSpeed = maxSpeed;
         image.scale(110,70);
         setImage(image);
     }

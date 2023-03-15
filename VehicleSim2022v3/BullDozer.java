@@ -14,6 +14,7 @@ public class BullDozer extends Vehicle
         isConstructionVehicle = true;
         maxSpeed = 8;
         speed = maxSpeed;
+        savedMaxSpeed = maxSpeed;
         image.scale(80,80);
         image.mirrorHorizontally();
         setImage(image);
@@ -44,6 +45,5 @@ public class BullDozer extends Vehicle
         return false;
     }
 
-    
 
 }

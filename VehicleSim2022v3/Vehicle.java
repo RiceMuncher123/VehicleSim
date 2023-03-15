@@ -19,6 +19,11 @@ public abstract class Vehicle extends SuperSmoothMover
     static final int rotationIncrease = 10;
     protected boolean isSpinning = false;
     protected boolean isOnConcrete = false;
+    protected boolean isTornado = false;
+    protected int laneYCoord;
+    protected int carRotation;
+    protected boolean gotHeight = false;
+    protected boolean tornadoSpeedDecrease = false;
     //make a stat bar of stats to fatalities to sucessful across
     //Make vehicles that hit eachother to swerve on other lanes
 
@@ -80,7 +85,6 @@ public abstract class Vehicle extends SuperSmoothMover
         bullDozerHit = true;
         setLocation(getX()+1,getY()-8);
         isSpinning = true;
-        //spi
     }
 
     protected boolean checkEdge() {
@@ -108,18 +112,58 @@ public abstract class Vehicle extends SuperSmoothMover
      */
     public void drive() 
     {
+        if(gotHeight == false){
+            laneYCoord = getY();
+            carRotation = getRotation();
+            gotHeight = true;
+        }
+
         // Ahead is a generic vehicle - we don't know what type BUT
         // since every Vehicle "promises" to have a getSpeed() method,
         // we can call that on any vehicle to find out it's speed
-        Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
-        if (ahead == null)
-        {
-            speed = maxSpeed;
 
-        } else {
-            speed = ahead.getSpeed();
+        if(VehicleWorld.isTornadoStorm()){
+
+            //maxSpeed -= 0.05;
+            if(getRotation() == 0 || getRotation() == 180)
+                setRotation(Greenfoot.getRandomNumber(359));
+            if(getY() > 20)
+                setLocation(getX(),getY()-4);
+            maxSpeed = 0;
         }
-        move (speed * direction);
+        else{
+            if(!bullDozerHit && getY() != laneYCoord){
+                setLocation(getX(),getY()+4);
+                if(getY() > laneYCoord){
+                    setLocation(getX(), laneYCoord);
+                }
+                if(getY() == laneYCoord){
+                    setRotation(0);
+                    maxSpeed = savedMaxSpeed;
+                }
+                
+            }
+            if(bullDozerHit){
+                maxSpeed = savedMaxSpeed;
+                checkHitVehicle();
+                this.fling();
+                rotation+=rotationIncrease;
+                setRotation(rotation);
+                checkHitPedestrian();
+            }
+            checkIsOnConcrete();
+            Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
+            if (ahead == null)
+            {
+                speed = maxSpeed;
+
+            } else {
+                speed = ahead.getSpeed();
+            }
+            move (speed * direction);
+        }
+
+
     }   
 
     /**

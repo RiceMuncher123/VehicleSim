@@ -20,17 +20,9 @@ public class Ambulance extends Vehicle
      */
     public void act()
     {
-        checkIsOnConcrete();
-        if(!bullDozerHit)
-            drive();
+        drive();
         checkHitPedestrian();
-        checkHitVehicle();
-        if(bullDozerHit){
-            this.fling();
-            rotation+= rotationIncrease;
-            setRotation(rotation);
-            checkHitPedestrian();
-        }
+        
         if (checkEdge()){
             getWorld().removeObject(this);
         }

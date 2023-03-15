@@ -12,6 +12,12 @@ public abstract class Pedestrian extends SuperSmoothMover
     protected boolean bullDozerHit = false;
     protected int rotation = 0;
     static final int rotationIncrease = 10;
+    protected boolean isTornado = false;
+    protected int laneYCoord;
+    protected int carRotation;
+    protected boolean gotHeight = false;
+    protected boolean tornadoSpeedDecrease = false;
+    protected boolean beenHitTornado = false;
     public Pedestrian(int direction) {
         // choose a random speed
         maxSpeed = Math.random() * 2 + 1;
@@ -28,27 +34,54 @@ public abstract class Pedestrian extends SuperSmoothMover
     public void act()
     {
         // If there is a v
-        if(bullDozerHit){
-            this.fling();
-            rotation += rotationIncrease;
-            setRotation(rotation);
-        }
-        if (awake){
-            if (getOneObjectAtOffset(0, (int)(direction * getImage().getHeight()/2 + (int)(direction * speed)), Vehicle.class) == null){
-                setLocation (getX(), getY() + (int)(speed*direction));
-            }
-            if (direction == -1 && getY() < 100){
-                getWorld().removeObject(this);
-            } else if (direction == 1 && getY() > 550){
-                getWorld().removeObject(this);
-            }
-        }
+       
 
     }
 
     /**
      * Method to cause this Pedestrian to become knocked down - stop moving, turn onto side
      */
+    
+    public void walk(){
+         if(gotHeight == false){
+            laneYCoord = 300;
+            carRotation = getRotation();
+            gotHeight = true;
+        }
+        
+        if(VehicleWorld.isTornadoStorm()){
+            rotation += rotationIncrease;
+            setRotation(rotation);
+            if(getY() > 20)
+                setLocation(getX(),getY()-4);
+            maxSpeed = 0;
+            beenHitTornado = true;
+        }
+        else{
+            if(!bullDozerHit && getY() != laneYCoord && beenHitTornado){
+                knockDown();
+                setLocation(getX(),getY()+4);
+                if(getY() > laneYCoord){
+                    setLocation(getX(), laneYCoord);
+                }
+            }
+            if(bullDozerHit){
+                this.fling();
+                rotation += rotationIncrease;
+                setRotation(rotation);
+            }
+            if (awake){
+                if (getOneObjectAtOffset(0, (int)(direction * getImage().getHeight()/2 + (int)(direction * speed)), Vehicle.class) == null){
+                    setLocation (getX(), getY() + (int)(speed*direction));
+                }
+                if (direction == -1 && getY() < 100){
+                    getWorld().removeObject(this);
+                } else if (direction == 1 && getY() > 550){
+                    getWorld().removeObject(this);
+                }
+            }
+        }
+    }
     public void knockDown () {
         speed = 0;
         setRotation (90);
@@ -62,6 +95,7 @@ public abstract class Pedestrian extends SuperSmoothMover
         speed = maxSpeed;
         setRotation (0);
         awake = true;
+        beenHitTornado = false;
     }
 
     public void boardBus(){
@@ -71,7 +105,7 @@ public abstract class Pedestrian extends SuperSmoothMover
     public void fling(){
         bullDozerHit = true;
         setLocation(getX()+1,getY()-8);
-        
+
     }
 
     public boolean isAwake () {

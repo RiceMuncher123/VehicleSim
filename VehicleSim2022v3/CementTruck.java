@@ -15,6 +15,7 @@ public class CementTruck extends Vehicle
         image.scale(70,70);
         maxSpeed = 2;
         speed = maxSpeed;
+        savedMaxSpeed = maxSpeed;
         image.mirrorHorizontally();
         setImage(image);
     }

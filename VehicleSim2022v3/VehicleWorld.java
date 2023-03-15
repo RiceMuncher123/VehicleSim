@@ -15,7 +15,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class VehicleWorld extends World
 {
     private GreenfootImage background;
-
+    private GreenfootImage backroundTornado;
     // Color Constants
     public static Color GREY_BORDER = new Color (108, 108, 108);
     public static Color GREY_STREET = new Color (88, 88, 88);
@@ -26,7 +26,8 @@ public class VehicleWorld extends World
     private int laneHeight, laneCount, spaceBetweenLanes;
     private int[] lanePositionsY;
     private VehicleSpawner[] laneSpawners;
-
+    private static boolean tornadoStorm;
+    private int acts;
     /**
      * Constructor for objects of class MyWorld.
      * 
@@ -35,11 +36,12 @@ public class VehicleWorld extends World
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(800, 600, 1, false); 
-
+        tornadoStorm = false;
         setPaintOrder (Pedestrian.class, Vehicle.class,Concrete.class);
 
         // set up background
         background = new GreenfootImage ("background01.png");
+        backroundTornado = new GreenfootImage("background02.png");
         setBackground (background);
 
         // Set critical variables
@@ -48,7 +50,7 @@ public class VehicleWorld extends World
         spaceBetweenLanes = 6;
         splitAtCenter = false;
         twoWayTraffic = false;
-
+        acts = 0;
         // Init lane spawner objects 
         laneSpawners = new VehicleSpawner[laneCount];
 
@@ -61,11 +63,16 @@ public class VehicleWorld extends World
         spawn();
     }
 
+    public static boolean isTornadoStorm () {
+        return tornadoStorm;
+    }
+
     private void spawn () {
         // Chance to spawn a vehicle
-        if (Greenfoot.getRandomNumber(30) == 0){
+        acts++;
+        if (Greenfoot.getRandomNumber(60) == 0){
             int lane = Greenfoot.getRandomNumber(laneCount);
-            if (!laneSpawners[lane].isTouchingVehicle()){
+            if (!laneSpawners[lane].isTouchingVehicle() && !tornadoStorm && acts > 120){
                 int vehicleType = Greenfoot.getRandomNumber(6);
                 if (vehicleType == 0){
                     addObject(new Car(laneSpawners[lane]), 0, 0);
@@ -104,6 +111,24 @@ public class VehicleWorld extends World
                 else if(pedestrianType == 1)
                     addObject(new Pedestrian1 (-1), xSpawnLocation, 550);
             }
+        }
+
+        if (!tornadoStorm && Greenfoot.getRandomNumber(400) == 0 && acts >= 300){
+            addObject (new Tornado(), 400, 300);
+            addObject(new ThunderClouds("right"), 0, 20 + Greenfoot.getRandomNumber(200));
+            addObject(new ThunderClouds("left"), 600, 20 + Greenfoot.getRandomNumber(200));
+
+            setBackground(backroundTornado);
+            lanePositionsY = prepareLanes (this, backroundTornado, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+            tornadoStorm = true;
+        }
+        if (tornadoStorm && getObjects(Tornado.class).size() == 0){
+            tornadoStorm = false;
+            acts = 0;
+        }
+        if(acts == 180){
+            setBackground(background);
+            lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
         }
     }
 

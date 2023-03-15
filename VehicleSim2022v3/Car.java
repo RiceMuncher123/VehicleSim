@@ -17,16 +17,8 @@ public class Car extends Vehicle
     public void act()
     {
         checkIsOnConcrete();
-        if(!bullDozerHit){
-            drive();
-        }
+        drive();
         checkHitPedestrian();
-        checkHitVehicle();
-        if(bullDozerHit){
-            this.fling();
-            rotation+= rotationIncrease;
-            setRotation(rotation);
-        }
         if (checkEdge()){
             getWorld().removeObject(this);
         }

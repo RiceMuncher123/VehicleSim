@@ -27,13 +27,12 @@ public class Bus extends Vehicle
      */
     public void act()
     {
-        checkIsOnConcrete();
         if(checkHitPedestrian()){
             isMoving = false;
             isWaiting = true;
             curWaitTime = maxWaitTime;
         }
-        if(!bullDozerHit && isMoving)
+        if(isMoving)
             drive();
         else{
             curWaitTime--;
@@ -41,12 +40,6 @@ public class Bus extends Vehicle
                 isMoving = true;
                 isWaiting = false;
             }
-        }
-        checkHitVehicle();
-        if(bullDozerHit){
-            this.fling();
-            rotation+=rotationIncrease;
-            setRotation(rotation);
         }
         if (checkEdge()){
             getWorld().removeObject(this);
