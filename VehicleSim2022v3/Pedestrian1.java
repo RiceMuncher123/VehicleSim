@@ -11,6 +11,8 @@ public class Pedestrian1 extends Pedestrian
     //GreenfootImage image = new GreenfootImage("WheelBarrow.png");
     public Pedestrian1(int direction){
         super(direction);
+        
+        savedMaxSpeed = maxSpeed;
         //image.scale(70,70);
         //setImage(image);
     }

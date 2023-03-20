@@ -7,6 +7,7 @@ public abstract class Pedestrian extends SuperSmoothMover
 {
     protected double speed;
     protected double maxSpeed;
+    protected double savedMaxSpeed;
     protected int direction; // direction is always -1 or 1, for moving down or up, respectively
     protected boolean awake;
     protected boolean bullDozerHit = false;
@@ -18,6 +19,7 @@ public abstract class Pedestrian extends SuperSmoothMover
     protected boolean gotHeight = false;
     protected boolean tornadoSpeedDecrease = false;
     protected boolean beenHitTornado = false;
+     
     public Pedestrian(int direction) {
         // choose a random speed
         maxSpeed = Math.random() * 2 + 1;
@@ -34,28 +36,36 @@ public abstract class Pedestrian extends SuperSmoothMover
     public void act()
     {
         // If there is a v
-       
 
     }
 
     /**
      * Method to cause this Pedestrian to become knocked down - stop moving, turn onto side
      */
-    
+
     public void walk(){
-         if(gotHeight == false){
+        if(gotHeight == false){
             laneYCoord = 300;
             carRotation = getRotation();
             gotHeight = true;
         }
-        
-        if(VehicleWorld.isTornadoStorm()){
-            rotation += rotationIncrease;
-            setRotation(rotation);
-            if(getY() > 20)
-                setLocation(getX(),getY()-4);
-            maxSpeed = 0;
-            beenHitTornado = true;
+
+        if(VehicleWorld.isEffectActive()){
+            if(VehicleWorld.getEffectType() == 0){
+                rotation += rotationIncrease;
+                setRotation(rotation);
+                if(getY() > 20)
+                    setLocation(getX(),getY()-4);
+                maxSpeed = 0;
+                beenHitTornado = true;
+            }
+            if(VehicleWorld.getEffectType() == 1){
+                rotation += rotationIncrease;
+                setRotation(rotation);
+                maxSpeed -= 0.05;
+                setLocation(getX() + maxSpeed,getY());
+            }
+
         }
         else{
             if(!bullDozerHit && getY() != laneYCoord && beenHitTornado){
@@ -71,6 +81,8 @@ public abstract class Pedestrian extends SuperSmoothMover
                 setRotation(rotation);
             }
             if (awake){
+                setRotation(0);
+                maxSpeed = savedMaxSpeed;
                 if (getOneObjectAtOffset(0, (int)(direction * getImage().getHeight()/2 + (int)(direction * speed)), Vehicle.class) == null){
                     setLocation (getX(), getY() + (int)(speed*direction));
                 }
@@ -82,6 +94,7 @@ public abstract class Pedestrian extends SuperSmoothMover
             }
         }
     }
+
     public void knockDown () {
         speed = 0;
         setRotation (90);

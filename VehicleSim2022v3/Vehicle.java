@@ -122,16 +122,20 @@ public abstract class Vehicle extends SuperSmoothMover
         // since every Vehicle "promises" to have a getSpeed() method,
         // we can call that on any vehicle to find out it's speed
 
-        if(VehicleWorld.isTornadoStorm()){
-
+        if(VehicleWorld.isEffectActive()){
+            if(VehicleWorld.getEffectType() == 0){
+                if(getRotation() == 0 || getRotation() == 180)
+                    setRotation(Greenfoot.getRandomNumber(359));
+                if(getY() > 20)
+                    setLocation(getX(),getY()-4);
+                maxSpeed = 0;
+            }
             //maxSpeed -= 0.05;
-            if(getRotation() == 0 || getRotation() == 180)
-                setRotation(Greenfoot.getRandomNumber(359));
-            if(getY() > 20)
-                setLocation(getX(),getY()-4);
-            maxSpeed = 0;
+            else if(VehicleWorld.getEffectType() == 1){
+                maxSpeed -= 0.05;
+            }
         }
-        else{
+        if(VehicleWorld.getEffectType() != 0){
             if(!bullDozerHit && getY() != laneYCoord){
                 setLocation(getX(),getY()+4);
                 if(getY() > laneYCoord){
@@ -163,9 +167,7 @@ public abstract class Vehicle extends SuperSmoothMover
             move (speed * direction);
         }
 
-
     }   
-
     /**
      * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
      * if a faster vehicle is ahead in the lane.

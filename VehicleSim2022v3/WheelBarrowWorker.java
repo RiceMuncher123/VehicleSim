@@ -17,6 +17,8 @@ public class WheelBarrowWorker extends Pedestrian
         super(direction);
         image.scale(70,70);
         setImage(image);
+        savedMaxSpeed = maxSpeed;
+
     }
 
     public void act()
