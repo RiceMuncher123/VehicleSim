@@ -12,7 +12,7 @@ public class StrongWinds extends Effect
      * Act - do whatever the StrongWinds wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    protected int speed = 2;
+    protected int speed = 3;
     public void act()
     {
         move(speed*-1);
@@ -23,7 +23,7 @@ public class StrongWinds extends Effect
     }
     public void addedToWorld (World w){
         image = new GreenfootImage("blowcloud.png");
-        image.scale(100,50);
+        image.scale(200,100);
         setImage(image);
 
     }
