@@ -24,6 +24,8 @@ public abstract class Vehicle extends SuperSmoothMover
     protected int carRotation;
     protected boolean gotHeight = false;
     protected boolean tornadoSpeedDecrease = false;
+    protected boolean isTurningLeft = false;
+    protected int nextLaneY;
     //make a stat bar of stats to fatalities to sucessful across
     //Make vehicles that hit eachother to swerve on other lanes
 
@@ -122,6 +124,82 @@ public abstract class Vehicle extends SuperSmoothMover
         // since every Vehicle "promises" to have a getSpeed() method,
         // we can call that on any vehicle to find out it's speed
 
+        checkIfGlobalAffect();
+        if(VehicleWorld.getEffectType() != 0){
+            globalAftermath();
+            if(bullDozerHit){
+                ifHitByBulldozer();
+            }
+            else{
+                checkIsOnConcrete();
+                if(!isTurningLeft){
+                    //change to if turning left and right instead of turning left
+                    Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
+                    if (ahead == null)
+                    {
+                        speed = maxSpeed;
+
+                    } else {
+                        if(checkLeft(getY()) == true){
+                            System.out.println("WTF");
+                            setRotation(150);
+                            VehicleWorld world = (VehicleWorld) getWorld();
+                            nextLaneY = getY()-48;
+                            isTurningLeft = true;
+                        }
+                        System.out.println("???/");
+
+                        //speed = ahead.getSpeed();
+                    }
+                }
+                else if(isTurningLeft){
+                    checkSwitchedLeftLane(nextLaneY);
+                }
+                move (speed * direction);
+            }
+
+        }
+
+    }   
+
+    public void checkSwitchedLeftLane(int destinationY){
+        if(getY() <= destinationY){
+            setLocation(getX(),destinationY);
+            //turn(30);
+            isTurningLeft = false;
+        }
+    }
+
+    public boolean checkLeft(int y){
+        VehicleWorld world = (VehicleWorld) getWorld();
+        int lane = world.getLane(y);
+        int laneY = world.getLaneY(lane);
+        if(lane == 0){
+            return false;
+        }
+        else{
+            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()+1)),getX(),getY()-48);
+            laneChecker lc = (laneChecker)getOneObjectAtOffset(0, -48, laneChecker.class);
+            if(lc == null)
+                return false;
+            else
+                return true;
+        }
+    }
+
+    public void checkCollision(){
+
+    }
+
+    /**
+     * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
+     * if a faster vehicle is ahead in the lane.
+     */
+    public double getSpeed(){
+        return speed;
+    }
+
+    public void checkIfGlobalAffect(){
         if(VehicleWorld.isEffectActive()){
             if(VehicleWorld.getEffectType() == 0){
                 if(getRotation() == 0 || getRotation() == 180)
@@ -135,44 +213,31 @@ public abstract class Vehicle extends SuperSmoothMover
                 maxSpeed -= 0.05;
             }
         }
-        if(VehicleWorld.getEffectType() != 0){
-            if(!bullDozerHit && getY() != laneYCoord){
-                setLocation(getX(),getY()+4);
-                if(getY() > laneYCoord){
-                    setLocation(getX(), laneYCoord);
-                }
-                if(getY() == laneYCoord){
-                    setRotation(0);
-                    maxSpeed = savedMaxSpeed;
-                }
-                
-            }
-            if(bullDozerHit){
-                maxSpeed = savedMaxSpeed;
-                checkHitVehicle();
-                this.fling();
-                rotation+=rotationIncrease;
-                setRotation(rotation);
-                checkHitPedestrian();
-            }
-            checkIsOnConcrete();
-            Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
-            if (ahead == null)
-            {
-                speed = maxSpeed;
-
-            } else {
-                speed = ahead.getSpeed();
-            }
-            move (speed * direction);
-        }
-
-    }   
-    /**
-     * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
-     * if a faster vehicle is ahead in the lane.
-     */
-    public double getSpeed(){
-        return speed;
     }
+
+    public void globalAftermath(){
+        if(!bullDozerHit && getY() != laneYCoord){
+            setLocation(getX(),getY()+4);
+            if(getY() > laneYCoord){
+                setLocation(getX(), laneYCoord);
+            }
+            if(getY() == laneYCoord){
+                setRotation(0);
+                maxSpeed = savedMaxSpeed;
+            }
+
+        }
+    }
+
+    public void ifHitByBulldozer(){
+        maxSpeed = savedMaxSpeed;
+        checkHitVehicle();
+        this.fling();
+        rotation+=rotationIncrease;
+        setRotation(rotation);
+        checkHitPedestrian();
+        move (speed * direction);
+    }
+
+
 }
