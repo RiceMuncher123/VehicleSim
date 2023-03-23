@@ -24,7 +24,7 @@ public class CementTruck extends Vehicle
     {
         checkHitPedestrian();
         drive();
-        if(!isTouching(Concrete.class))
+        if(!isTouching(Concrete.class) && !VehicleWorld.isEffectActive())
             getWorld().addObject(new Concrete(), getX()-60, getY());            
         if (checkEdge()){
             getWorld().removeObject(this);

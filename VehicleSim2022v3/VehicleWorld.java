@@ -29,6 +29,7 @@ public class VehicleWorld extends World
     private static boolean effectActive;
     private int acts;
     protected static int typeGlobalEffect;
+    private boolean globalAffectOn;
     /**
      * Constructor for objects of class MyWorld.
      * 
@@ -46,6 +47,7 @@ public class VehicleWorld extends World
         setBackground (background);
 
         // Set critical variables
+        globalAffectOn = false;
         laneCount = 6;
         laneHeight = 48;
         spaceBetweenLanes = 6;
@@ -118,37 +120,39 @@ public class VehicleWorld extends World
                     addObject(new Pedestrian1 (-1), xSpawnLocation, 550);
             }
         }
+        if(globalAffectOn){
+            if (!effectActive && Greenfoot.getRandomNumber(400) == 0 && acts >= 300){
+                typeGlobalEffect = Greenfoot.getRandomNumber(2);
+                if(typeGlobalEffect == 0){
+                    addObject (new Tornado(), 400, 300);
+                    addObject(new ThunderClouds("right"), 0, 20 + Greenfoot.getRandomNumber(200));
+                    addObject(new ThunderClouds("left"), 600, 20 + Greenfoot.getRandomNumber(200));
+                    setBackground(backroundTornado);
+                    lanePositionsY = prepareLanes (this, backroundTornado, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+                }
+                else if(typeGlobalEffect == 1){
+                    addObject (new StrongWinds(), 700, 50);
+                }
 
-        if (!effectActive && Greenfoot.getRandomNumber(400) == 0 && acts >= 300){
-            typeGlobalEffect = Greenfoot.getRandomNumber(2);
-            if(typeGlobalEffect == 0){
-                addObject (new Tornado(), 400, 300);
-                addObject(new ThunderClouds("right"), 0, 20 + Greenfoot.getRandomNumber(200));
-                addObject(new ThunderClouds("left"), 600, 20 + Greenfoot.getRandomNumber(200));
-                setBackground(backroundTornado);
-                lanePositionsY = prepareLanes (this, backroundTornado, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+                effectActive = true;
             }
-            else if(typeGlobalEffect == 1){
-                addObject (new StrongWinds(), 700, 50);
+            if (effectActive && typeGlobalEffect == 0 && getObjects(Tornado.class).size() == 0){
+                effectActive = false;
+                acts = 0;
+                typeGlobalEffect = 100;
             }
+            else if (effectActive && typeGlobalEffect == 1 && getObjects(StrongWinds.class).size() == 0){
+                effectActive = false;
+                typeGlobalEffect = 100;
 
-            effectActive = true;
+                acts = 0;
+            }
+            if(typeGlobalEffect == 100 && acts == 180){
+                setBackground(background);
+                lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+            }
         }
-        if (effectActive && typeGlobalEffect == 0 && getObjects(Tornado.class).size() == 0){
-            effectActive = false;
-            acts = 0;
-            typeGlobalEffect = 100;
-        }
-        else if (effectActive && typeGlobalEffect == 1 && getObjects(StrongWinds.class).size() == 0){
-            effectActive = false;
-            typeGlobalEffect = 100;
 
-            acts = 0;
-        }
-        if(typeGlobalEffect == 100 && acts == 180){
-            setBackground(background);
-            lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
-        }
     }
 
     /**

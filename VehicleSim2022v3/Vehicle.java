@@ -139,21 +139,20 @@ public abstract class Vehicle extends SuperSmoothMover
                     {
                         speed = maxSpeed;
 
-                    } else {
-                        if(checkLeft(getY()) == true){
-                            System.out.println("WTF");
-                            setRotation(150);
-                            VehicleWorld world = (VehicleWorld) getWorld();
-                            nextLaneY = getY()-48;
-                            isTurningLeft = true;
-                        }
-                        System.out.println("???/");
-
-                        //speed = ahead.getSpeed();
+                    }else if(checkLeft(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true)){
+                        maxSpeed = 1;
+                        speed = maxSpeed;
+                        isTurningLeft = true;
+                        turn(-45);
+                        VehicleWorld world = (VehicleWorld) getWorld();
+                        laneYCoord = getY()-48 - 6;
+                    }
+                    else if(speed > ahead.getSpeed()){
+                        speed = ahead.getSpeed();
                     }
                 }
                 else if(isTurningLeft){
-                    checkSwitchedLeftLane(nextLaneY);
+                    checkSwitchedLeftLane(laneYCoord);
                 }
                 move (speed * direction);
             }
@@ -163,9 +162,9 @@ public abstract class Vehicle extends SuperSmoothMover
     }   
 
     public void checkSwitchedLeftLane(int destinationY){
-        if(getY() <= destinationY){
+        if(getY() == destinationY){
             setLocation(getX(),destinationY);
-            //turn(30);
+            turn(45);
             isTurningLeft = false;
         }
     }
@@ -178,18 +177,17 @@ public abstract class Vehicle extends SuperSmoothMover
             return false;
         }
         else{
-            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()+1)),getX(),getY()-48);
-            laneChecker lc = (laneChecker)getOneObjectAtOffset(0, -48, laneChecker.class);
+            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()*1.5)),getX(),getY()-48-6);
+            laneChecker lc = (laneChecker)getOneObjectAtOffset(0, -48-6, laneChecker.class);
             if(lc == null)
                 return false;
-            else
+            else{
+                getWorld().removeObject(lc);
                 return true;
+            }
         }
     }
 
-    public void checkCollision(){
-
-    }
 
     /**
      * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
@@ -216,16 +214,18 @@ public abstract class Vehicle extends SuperSmoothMover
     }
 
     public void globalAftermath(){
-        if(!bullDozerHit && getY() != laneYCoord){
-            setLocation(getX(),getY()+4);
-            if(getY() > laneYCoord){
-                setLocation(getX(), laneYCoord);
-            }
-            if(getY() == laneYCoord){
-                setRotation(0);
-                maxSpeed = savedMaxSpeed;
-            }
+        if(!isTurningLeft){
+            if(!bullDozerHit && getY() != laneYCoord){
+                setLocation(getX(),getY()+4);
+                if(getY() > laneYCoord){
+                    setLocation(getX(), laneYCoord);
+                }
+                if(getY() == laneYCoord){
+                    setRotation(0);
+                    maxSpeed = savedMaxSpeed;
+                }
 
+            }
         }
     }
 
@@ -238,6 +238,5 @@ public abstract class Vehicle extends SuperSmoothMover
         checkHitPedestrian();
         move (speed * direction);
     }
-
 
 }
