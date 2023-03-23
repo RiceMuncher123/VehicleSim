@@ -28,6 +28,7 @@ public abstract class Vehicle extends SuperSmoothMover
     protected boolean switchingLeft = false;
     protected boolean switchingRight = false;
     protected int nextLaneY;
+    protected int turnCoolDown;
     //make a stat bar of stats to fatalities to sucessful across
     //Make vehicles that hit eachother to swerve on other lanes
 
@@ -36,7 +37,7 @@ public abstract class Vehicle extends SuperSmoothMover
     public Vehicle (VehicleSpawner origin) {
         this.origin = origin;
         moving = true;
-
+        turnCoolDown = 0;
         if (origin.facesRightward()){
             direction = 1;
 
@@ -140,33 +141,36 @@ public abstract class Vehicle extends SuperSmoothMover
                     if (ahead == null)
                     {
                         speed = maxSpeed;
-
-                    }else if(checkLeft(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true)){
+                    }else if(turnCoolDown >= 60 && checkLeft(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||(getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true))){
 
                         isSwitchingLanes = true;
                         switchingLeft = true;
                         setRotation(-45);
+                        maxSpeed = maxSpeed*2;
                         VehicleWorld world = (VehicleWorld) getWorld();
                         laneYCoord = getY()-48 - 6;
                     }
-                    else if(checkRight(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true)){
+                    else if(turnCoolDown >= 60 && checkRight(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||(getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true))){
                         isSwitchingLanes = true;
                         switchingRight = true;
                         setRotation(45);
+                        maxSpeed = maxSpeed*2;
                         VehicleWorld world = (VehicleWorld) getWorld();
                         laneYCoord = getY()+48 + 6;
                     }
-                    else if(speed > ahead.getSpeed()){
+                    else if(turnCoolDown < 60 && speed > ahead.getSpeed()){
                         speed = ahead.getSpeed();
                     }
                 }
                 else if(isSwitchingLanes && switchingLeft){
                     checkSwitchedLeftLane(laneYCoord);
+                    turnCoolDown = 0;
                 }
                 else if(isSwitchingLanes && switchingRight){
                     checkSwitchedRightLane(laneYCoord);
+                    turnCoolDown = 0;
                 }
-
+                turnCoolDown++;
                 move (speed * direction);
             }
 
@@ -202,12 +206,14 @@ public abstract class Vehicle extends SuperSmoothMover
             return false;
         }
         else{
-            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()*1.5), "left"),getX(),getY()-48-6);
-            laneChecker lc = (laneChecker)getOneObjectAtOffset(0, -48-6, laneChecker.class);
-            if(lc == null)
+            getWorld().addObject(new LaneChecker(speed, direction,(int)(getImage().getWidth()*3), "left"),getX(),getY()-48-6);
+            LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
+            if(lc.amTouchingVehicle() == true){
+                //getWorld().removeObject(lc);
                 return false;
+            }
             else{
-                getWorld().removeObject(lc);
+                //getWorld().removeObject(lc);    
                 return true;
             }
         }
@@ -221,12 +227,12 @@ public abstract class Vehicle extends SuperSmoothMover
             return false;
         }
         else{
-            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()*1.5), "right"),getX(),getY()+48+6);
-            laneChecker lc = (laneChecker)getOneObjectAtOffset(0, +48+6, laneChecker.class);
-            if(lc == null)
+            getWorld().addObject(new LaneChecker(speed, direction,(int)(getImage().getWidth()*3), "right"),getX(),getY()+48+6);
+            LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);
+            if(lc.amTouchingVehicle() == true)
                 return false;
             else{
-                getWorld().removeObject(lc);
+                //getWorld().removeObject(lc);
                 return true;
             }
         }

@@ -8,7 +8,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class laneChecker extends SuperSmoothMover
+public class LaneChecker extends SuperSmoothMover
 {
     public static final Color TRANSPARENT_RED = new Color (255, 0, 0, 128);
 
@@ -19,7 +19,7 @@ public class laneChecker extends SuperSmoothMover
     private double speed;
     private int direction;
     private String topOrBottomLane;
-    public laneChecker (double speed, int direction, int vehicleWidth, String topOrBottomLane)
+    public LaneChecker (double speed, int direction, int vehicleWidth, String topOrBottomLane)
     {
         this.topOrBottomLane = topOrBottomLane;
         this.speed = speed;
@@ -39,19 +39,23 @@ public class laneChecker extends SuperSmoothMover
 
     public void act(){
         move(speed*direction);
-        //amTouchingVehicle() ||
-        if(isAtEdge()){
-            getWorld().removeObject(this);
-        }        
+        //amTouchingVehicle() ||       
     }
 
     public boolean amTouchingVehicle(){
         if(topOrBottomLane.equals("left")){
-            Bus b = (Bus)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, -4, Bus.class);
-            if(b != null){
+            Bus busInfrontTopHalf = (Bus)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, -4, Bus.class);
+            Vehicle vInfrontBottomLane = (Vehicle)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, +48, Vehicle.class);
+            Vehicle vInfrontSameLane = (Vehicle)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Vehicle.class);
+
+            //null = ethier there is no bus or it's the top half of the bus
+
+            //If it is a vehicle exclusing bus's offset
+            if(isTouchingVehicle() && (busInfrontTopHalf == null) && (vInfrontBottomLane != null && vInfrontBottomLane.getClass() == Bus.class)){
                 return true;
             }
-            else if (isTouchingVehicle() && b == null){
+            //if its a bus on the same lane
+            else if (isTouchingVehicle()){
                 return true;
             }
             else{
@@ -59,7 +63,7 @@ public class laneChecker extends SuperSmoothMover
             }
         }
         else{
-            if(isTouchingVehicle()){
+            if(!isTouchingVehicle()){
                 return true;
             }
             else{
