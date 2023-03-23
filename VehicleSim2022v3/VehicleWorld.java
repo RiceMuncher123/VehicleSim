@@ -78,7 +78,7 @@ public class VehicleWorld extends World
     private void spawn () {
         // Chance to spawn a vehicle
         acts++;
-        if (Greenfoot.getRandomNumber(30) == 0){
+        if (Greenfoot.getRandomNumber(15) == 0){
             int lane = Greenfoot.getRandomNumber(laneCount);
             if (!laneSpawners[lane].isTouchingVehicle() && !effectActive && acts > 120){
                 int vehicleType = Greenfoot.getRandomNumber(6);

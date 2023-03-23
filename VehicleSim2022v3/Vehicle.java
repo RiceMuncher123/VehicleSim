@@ -24,7 +24,9 @@ public abstract class Vehicle extends SuperSmoothMover
     protected int carRotation;
     protected boolean gotHeight = false;
     protected boolean tornadoSpeedDecrease = false;
-    protected boolean isTurningLeft = false;
+    protected boolean isSwitchingLanes = false;
+    protected boolean switchingLeft = false;
+    protected boolean switchingRight = false;
     protected int nextLaneY;
     //make a stat bar of stats to fatalities to sucessful across
     //Make vehicles that hit eachother to swerve on other lanes
@@ -132,7 +134,7 @@ public abstract class Vehicle extends SuperSmoothMover
             }
             else{
                 checkIsOnConcrete();
-                if(!isTurningLeft){
+                if(!isSwitchingLanes){
                     //change to if turning left and right instead of turning left
                     Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
                     if (ahead == null)
@@ -140,20 +142,31 @@ public abstract class Vehicle extends SuperSmoothMover
                         speed = maxSpeed;
 
                     }else if(checkLeft(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true)){
-                        maxSpeed = 1;
-                        speed = maxSpeed;
-                        isTurningLeft = true;
-                        turn(-45);
+
+                        isSwitchingLanes = true;
+                        switchingLeft = true;
+                        setRotation(-45);
                         VehicleWorld world = (VehicleWorld) getWorld();
                         laneYCoord = getY()-48 - 6;
+                    }
+                    else if(checkRight(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true)){
+                        isSwitchingLanes = true;
+                        switchingRight = true;
+                        setRotation(45);
+                        VehicleWorld world = (VehicleWorld) getWorld();
+                        laneYCoord = getY()+48 + 6;
                     }
                     else if(speed > ahead.getSpeed()){
                         speed = ahead.getSpeed();
                     }
                 }
-                else if(isTurningLeft){
+                else if(isSwitchingLanes && switchingLeft){
                     checkSwitchedLeftLane(laneYCoord);
                 }
+                else if(isSwitchingLanes && switchingRight){
+                    checkSwitchedRightLane(laneYCoord);
+                }
+
                 move (speed * direction);
             }
 
@@ -162,10 +175,22 @@ public abstract class Vehicle extends SuperSmoothMover
     }   
 
     public void checkSwitchedLeftLane(int destinationY){
-        if(getY() == destinationY){
+        if(getY() <= destinationY){
             setLocation(getX(),destinationY);
-            turn(45);
-            isTurningLeft = false;
+            setRotation(0);
+            isSwitchingLanes = false;
+            switchingLeft = false;
+            maxSpeed = savedMaxSpeed;
+        }
+    }
+
+    public void checkSwitchedRightLane(int destinationY){
+        if(getY() >= destinationY){
+            setLocation(getX(),destinationY);
+            setRotation(0);
+            isSwitchingLanes = false;
+            switchingRight = false;
+            maxSpeed = savedMaxSpeed;
         }
     }
 
@@ -177,7 +202,7 @@ public abstract class Vehicle extends SuperSmoothMover
             return false;
         }
         else{
-            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()*1.5)),getX(),getY()-48-6);
+            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()*1.5), "left"),getX(),getY()-48-6);
             laneChecker lc = (laneChecker)getOneObjectAtOffset(0, -48-6, laneChecker.class);
             if(lc == null)
                 return false;
@@ -188,6 +213,24 @@ public abstract class Vehicle extends SuperSmoothMover
         }
     }
 
+    public boolean checkRight(int y){
+        VehicleWorld world = (VehicleWorld) getWorld();
+        int lane = world.getLane(y);
+        int laneY = world.getLaneY(lane);
+        if(lane == 5){
+            return false;
+        }
+        else{
+            getWorld().addObject(new laneChecker(speed, direction,(int)(getImage().getWidth()*1.5), "right"),getX(),getY()+48+6);
+            laneChecker lc = (laneChecker)getOneObjectAtOffset(0, +48+6, laneChecker.class);
+            if(lc == null)
+                return false;
+            else{
+                getWorld().removeObject(lc);
+                return true;
+            }
+        }
+    }
 
     /**
      * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
@@ -214,7 +257,7 @@ public abstract class Vehicle extends SuperSmoothMover
     }
 
     public void globalAftermath(){
-        if(!isTurningLeft){
+        if(!isSwitchingLanes){
             if(!bullDozerHit && getY() != laneYCoord){
                 setLocation(getX(),getY()+4);
                 if(getY() > laneYCoord){
