@@ -89,11 +89,9 @@ public class VehicleWorld extends World
                     addObject(new Bus(laneSpawners[lane]), 0, 0);
                 } else if (vehicleType == 2){
                     addObject(new Ambulance(laneSpawners[lane]), 0, 0);
-                }else if(vehicleType == 100){
-                    //3
+                }else if(vehicleType == 3){
                     addObject(new BullDozer(laneSpawners[lane]), 0, 0);
-                }else if(vehicleType == 100){
-
+                }else if(vehicleType == 4){
                     addObject(new CementTruck(laneSpawners[lane]), 0, 0);
                 }
                 else if(vehicleType == 5){
@@ -115,12 +113,16 @@ public class VehicleWorld extends World
                     addObject (new WheelBarrowWorker (1), xSpawnLocation, 50);
                 else if(pedestrianType == 1)
                     addObject(new Pedestrian1 (1), xSpawnLocation, 50);
+                else if(pedestrianType == 2)
+                    addObject(new JWalkPedestrian (1), xSpawnLocation,50);
             } else {
                 int pedestrianType = Greenfoot.getRandomNumber(6);
                 if(pedestrianType == 0)
                     addObject (new WheelBarrowWorker (-1), xSpawnLocation, 550);
                 else if(pedestrianType == 1)
                     addObject(new Pedestrian1 (-1), xSpawnLocation, 550);
+                else if(pedestrianType == 2)
+                    addObject(new JWalkPedestrian (-1), xSpawnLocation, 550);
             }
         }
         if(globalAffectOn){

@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.target=JWalkPedestrian
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ JWalkPedestrian\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=direction
+comment1.target=JWalkPedestrian(int)
+comment2.params=
+comment2.target=double\ getXSpeed()
+comment3.params=
+comment3.target=double\ getYSpeed()
+comment4.params=direction
+comment4.target=void\ setDestination(int)
+comment5.params=
+comment5.target=void\ act()
+numComments=6
