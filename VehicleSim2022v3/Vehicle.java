@@ -239,8 +239,6 @@ public abstract class Vehicle extends SuperSmoothMover
     }
 
     public boolean checkSwitchedLeftLane(int destinationY, double speed){
-        System.out.println(Greenfoot.getRandomNumber(10));
-
         if(getY() -speed <= destinationY){
             setLocation(getX(),destinationY);
             setRotation(0);
@@ -254,8 +252,6 @@ public abstract class Vehicle extends SuperSmoothMover
     }
 
     public boolean checkSwitchedRightLane(int destinationY, double speed){
-        System.out.println(Greenfoot.getRandomNumber(10));
-
         if(getY() + speed >= destinationY){
             setLocation(getX(),destinationY);
             setRotation(0);

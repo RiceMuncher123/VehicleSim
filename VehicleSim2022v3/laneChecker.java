@@ -29,7 +29,7 @@ public class LaneChecker extends SuperSmoothMover
         VehicleWorld world = (VehicleWorld) getWorld();
         this.height = (int)(48 * 0.75);
         width = vehicleWidth;
-        visible = true;
+        visible = false;
         image = new GreenfootImage (width, height);
         if(visible){
             image.setColor(TRANSPARENT_RED);

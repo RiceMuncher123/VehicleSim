@@ -40,7 +40,7 @@ public class VehicleWorld extends World
         super(800, 600, 1, false); 
         effectActive = false;
         setPaintOrder (Pedestrian.class, Vehicle.class,Concrete.class);
-        Greenfoot.setSpeed(55);
+        Greenfoot.setSpeed(50);
 
         // set up background
         background = new GreenfootImage ("background01.png");
