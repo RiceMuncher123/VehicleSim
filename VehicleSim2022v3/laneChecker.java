@@ -19,6 +19,7 @@ public class LaneChecker extends SuperSmoothMover
     private double speed;
     private int direction;
     private String topOrBottomLane;
+
     public LaneChecker (double speed, int direction, int vehicleWidth, String topOrBottomLane)
     {
         this.topOrBottomLane = topOrBottomLane;
@@ -39,9 +40,14 @@ public class LaneChecker extends SuperSmoothMover
 
     public void act(){
         move(speed*direction);
+        if(isAtEdge()){
+            getWorld().removeObject(this);
+        }
         //amTouchingVehicle() ||       
     }
-
+    public double getSpeed(){
+        return speed;
+    }
     public boolean amTouchingVehicle(){
         if(topOrBottomLane.equals("left")){
             Bus busInfrontTopHalf = (Bus)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, -4, Bus.class);

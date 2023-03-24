@@ -40,6 +40,7 @@ public class VehicleWorld extends World
         super(800, 600, 1, false); 
         effectActive = false;
         setPaintOrder (Pedestrian.class, Vehicle.class,Concrete.class);
+        Greenfoot.setSpeed(55);
 
         // set up background
         background = new GreenfootImage ("background01.png");
@@ -88,16 +89,18 @@ public class VehicleWorld extends World
                     addObject(new Bus(laneSpawners[lane]), 0, 0);
                 } else if (vehicleType == 2){
                     addObject(new Ambulance(laneSpawners[lane]), 0, 0);
-                }else if(vehicleType == 3){
+                }else if(vehicleType == 100){
+                    //3
                     addObject(new BullDozer(laneSpawners[lane]), 0, 0);
-                }else if(vehicleType == 4){
+                }else if(vehicleType == 100){
+
                     addObject(new CementTruck(laneSpawners[lane]), 0, 0);
                 }
                 else if(vehicleType == 5){
-                    int outerLane = Greenfoot.getRandomNumber(2);
-                    if(outerLane == 1)
-                        outerLane = laneSpawners.length-1;
-                    addObject(new DumpTruck(laneSpawners[outerLane]), 0, 0);
+                    if(lane == 1)
+                        addObject(new DumpTruck(laneSpawners[lane]), 0, 0);
+                    else if(lane == 5)
+                         addObject(new DumpTruck(laneSpawners[lane]), 0, 0);
                 }
             }
         }

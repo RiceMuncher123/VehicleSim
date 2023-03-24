@@ -29,6 +29,8 @@ public abstract class Vehicle extends SuperSmoothMover
     protected boolean switchingRight = false;
     protected int nextLaneY;
     protected int turnCoolDown;
+    protected boolean checkedLeft = false;
+    protected boolean checkedRight = false;
     //make a stat bar of stats to fatalities to sucessful across
     //Make vehicles that hit eachother to swerve on other lanes
 
@@ -135,108 +137,190 @@ public abstract class Vehicle extends SuperSmoothMover
             }
             else{
                 checkIsOnConcrete();
+                LaneChecker lcLeftLane = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
+                LaneChecker lcRightLane = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);    
+                LaneChecker lcFront = (LaneChecker)getOneObjectAtOffset(direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, LaneChecker.class);  
                 if(!isSwitchingLanes){
-                    //change to if turning left and right instead of turning left
                     Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
+                    //change to if turning left and right instead of turning left
+
                     if (ahead == null)
                     {
                         speed = maxSpeed;
-                    }else if(turnCoolDown >= 60 && checkLeft(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||(getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true))){
+                    }
+                    else if(ahead.getIsSwitchingLanes() == false && turnCoolDown > 120){
+                        lcLeftLane = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
+                        lcRightLane = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);        
+                        if(lcLeftLane == null){
+                            putLeftLaneChecker(getY());
+                            lcLeftLane = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
+                            if(lcLeftLane != null){
+                                if(lcLeftLane.amTouchingVehicle() == true){
+                                    getWorld().removeObject(lcLeftLane);
+                                }
+                                else{
+                                    isSwitchingLanes = true;
+                                    switchingLeft = true;
+                                    laneYCoord = getY()-48 - 6;
+                                    //maxSpeed+= 10;
+                                    setRotation(-45);
+                                    //return true;
+                                }
+                            }
+                        }
+                        if(!isSwitchingLanes && lcRightLane == null){
+                            putRightLaneChecker(getY());
+                            lcRightLane = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);
+                            if(lcRightLane != null){
+                                if(lcRightLane.amTouchingVehicle() == true){
+                                    getWorld().removeObject(lcRightLane);
+                                }
+                                else{
+                                    isSwitchingLanes = true;
+                                    switchingRight = true;
+                                    laneYCoord = getY()+48 + 6;
+                                    //maxSpeed+= 10;
+                                    setRotation(45);
+                                    //return true;
+                                }
+                            }
 
-                        isSwitchingLanes = true;
-                        switchingLeft = true;
-                        setRotation(-45);
-                        maxSpeed = maxSpeed*2;
-                        VehicleWorld world = (VehicleWorld) getWorld();
-                        laneYCoord = getY()-48 - 6;
+                        }
+                        if(!isSwitchingLanes && getRotation() == 0){
+                            //if lanes happen to have cars on them
+                            speed = 0;
+                        }
+                        //ends here
                     }
-                    else if(turnCoolDown >= 60 && checkRight(getY()) == true && !VehicleWorld.isEffectActive() && (getClass() != BullDozer.class ||(getClass() == BullDozer.class && ahead.getIsConstructionVehicle() == true))){
-                        isSwitchingLanes = true;
-                        switchingRight = true;
-                        setRotation(45);
-                        maxSpeed = maxSpeed*2;
-                        VehicleWorld world = (VehicleWorld) getWorld();
-                        laneYCoord = getY()+48 + 6;
+                    else{
+                        //if vehicle infront is switching lanes
+                        speed = 0;
                     }
-                    else if(turnCoolDown < 60 && speed > ahead.getSpeed()){
-                        speed = ahead.getSpeed();
-                    }
+                    if(lcFront != null && isTouching(LaneChecker.class) && getRotation() == 0 && !isSwitchingLanes && turnCoolDown > 120)
+                        speed = lcFront.getSpeed()*2;
+                    else if(lcFront != null && !isTouching(LaneChecker.class) && getRotation() == 0 && !isSwitchingLanes && turnCoolDown > 120)
+                        speed = lcFront.getSpeed();
                 }
-                else if(isSwitchingLanes && switchingLeft){
-                    checkSwitchedLeftLane(laneYCoord);
+                else if(isSwitchingLanes && switchingLeft){        
+                    if(checkSwitchedLeftLane(laneYCoord, maxSpeed) == true){
+                        getWorld().removeObject(lcFront);
+                    }
                     turnCoolDown = 0;
                 }
                 else if(isSwitchingLanes && switchingRight){
-                    checkSwitchedRightLane(laneYCoord);
+                    if(checkSwitchedRightLane(laneYCoord, maxSpeed) == true){
+                        getWorld().removeObject(lcFront);
+                    }
                     turnCoolDown = 0;
                 }
                 turnCoolDown++;
                 move (speed * direction);
+
             }
+        }  
+    }
 
-        }
+    public boolean getIsSwitchingLanes(){
+        return isSwitchingLanes;
+    }
 
-    }   
+    public boolean trySwitchLanes(){
+        //Check if existing lane checkers exist
 
-    public void checkSwitchedLeftLane(int destinationY){
-        if(getY() <= destinationY){
+        return false;
+
+        //if they do set speed to front vehicle speed
+        //else you want to place lane checkers
+        //once you place lane checkers check if those lane checkers r touching vehicles
+        //if they are not then turn left
+
+        //if they are delete left lane checker and check right
+
+    }
+
+    public boolean checkSwitchedLeftLane(int destinationY, double speed){
+        System.out.println(Greenfoot.getRandomNumber(10));
+
+        if(getY() -speed <= destinationY){
             setLocation(getX(),destinationY);
             setRotation(0);
             isSwitchingLanes = false;
             switchingLeft = false;
             maxSpeed = savedMaxSpeed;
+            return true;
         }
+        move(direction*maxSpeed);
+        return false;
     }
 
-    public void checkSwitchedRightLane(int destinationY){
-        if(getY() >= destinationY){
+    public boolean checkSwitchedRightLane(int destinationY, double speed){
+        System.out.println(Greenfoot.getRandomNumber(10));
+
+        if(getY() + speed >= destinationY){
             setLocation(getX(),destinationY);
             setRotation(0);
             isSwitchingLanes = false;
             switchingRight = false;
             maxSpeed = savedMaxSpeed;
+            return true;
         }
+        move(direction*maxSpeed);
+
+        return false;
     }
 
-    public boolean checkLeft(int y){
+    public boolean putLeftLaneChecker(int y){
         VehicleWorld world = (VehicleWorld) getWorld();
         int lane = world.getLane(y);
         int laneY = world.getLaneY(lane);
-        if(lane == 0){
-            return false;
-        }
-        else{
+        if(lane != 0){
             getWorld().addObject(new LaneChecker(speed, direction,(int)(getImage().getWidth()*3), "left"),getX(),getY()-48-6);
-            LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
-            if(lc.amTouchingVehicle() == true){
-                //getWorld().removeObject(lc);
-                return false;
-            }
-            else{
-                //getWorld().removeObject(lc);    
-                return true;
-            }
+            return true;
         }
+        return false;
+
     }
 
-    public boolean checkRight(int y){
+    public boolean putRightLaneChecker(int y){
         VehicleWorld world = (VehicleWorld) getWorld();
         int lane = world.getLane(y);
         int laneY = world.getLaneY(lane);
-        if(lane == 5){
-            return false;
-        }
-        else{
+        if(lane != 5){
             getWorld().addObject(new LaneChecker(speed, direction,(int)(getImage().getWidth()*3), "right"),getX(),getY()+48+6);
-            LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);
-            if(lc.amTouchingVehicle() == true)
-                return false;
-            else{
-                //getWorld().removeObject(lc);
-                return true;
-            }
+            return true;
         }
+        return false;
     }
+
+    // public boolean checkLeftLane(){
+    // LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
+    // if(lc != null){
+    // if(lc.amTouchingVehicle() == true){
+    // getWorld().removeObject(lc);
+    // return false;
+    // }
+    // else{
+    // getWorld().removeObject(lc);    
+    // return true;
+    // }
+    // }
+    // return false;
+    // }
+
+    // public boolean checkRightLane(){
+    // LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);
+    // if(lc != null){
+    // if(lc.amTouchingVehicle() == true){
+    // getWorld().removeObject(lc);    
+    // return false;
+    // }
+    // else{
+    // getWorld().removeObject(lc);
+    // return true;
+    // }
+    // }
+    // return false;
+    // }
 
     /**
      * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
