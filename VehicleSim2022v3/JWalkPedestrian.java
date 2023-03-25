@@ -13,18 +13,24 @@ public class JWalkPedestrian extends Pedestrian
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     protected boolean hasSetLocation;
+    GreenfootImage image;
     public JWalkPedestrian(int direction){
         super(direction);
+        image = new GreenfootImage("images/PedestrianImages/PedestrianImg" + Greenfoot.getRandomNumber(11) + ".png");
+
+        setImage(image);
         hasSetLocation = false;
         timeToArrive = 3;
     }
-    
+
     public double getXSpeed(){
         return xSpeed;
     }
+
     public double getYSpeed(){
         return ySpeed;
     }
+
     public void setDestination(int direction){
         //If is moving to the top
         if(direction == -1){
@@ -32,6 +38,7 @@ public class JWalkPedestrian extends Pedestrian
             yDestination = 0;
             //time in seconds to get to the other side
             //distance/time = speed for y
+            //slope formula :P
 
             ySpeed = -1*getY()/(timeToArrive* 60);
             if(getX() < getWorld().getWidth()/2){
@@ -43,6 +50,7 @@ public class JWalkPedestrian extends Pedestrian
             else if(getX() > getWorld().getWidth()/2){
                 xDestination = Greenfoot.getRandomNumber(getWorld().getWidth()/2);
                 xSpeed = (getX() - xDestination)/(timeToArrive* 60);
+
             }
 
         }
@@ -53,11 +61,17 @@ public class JWalkPedestrian extends Pedestrian
             if(getX() < getWorld().getWidth()/2){
                 xDestination = Greenfoot.getRandomNumber(getWorld().getWidth()/2) + getWorld().getWidth()/2;
                 xSpeed = (xDestination - getX()) / (timeToArrive* 60);
+
             }
             else if(getX() > getWorld().getWidth()/2){
                 xDestination = Greenfoot.getRandomNumber(getWorld().getWidth()/2);
                 xSpeed = (xDestination - getX())/(timeToArrive* 60);
+
             }
+        }
+        if(xSpeed < 0){
+            image.mirrorHorizontally();
+            setImage(image);
         }
     }
 

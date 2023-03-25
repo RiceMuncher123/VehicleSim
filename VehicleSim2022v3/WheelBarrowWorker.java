@@ -15,10 +15,9 @@ public class WheelBarrowWorker extends Pedestrian
     GreenfootImage image = new GreenfootImage("WheelBarrow.png");
     public WheelBarrowWorker(int direction){
         super(direction);
-        image.scale(70,70);
         setImage(image);
         savedMaxSpeed = maxSpeed;
-
+        
     }
 
     public void act()
