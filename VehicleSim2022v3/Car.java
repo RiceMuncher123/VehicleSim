@@ -5,12 +5,15 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  */
 public class Car extends Vehicle
 {
+    GreenfootImage image;
 
     public Car(VehicleSpawner origin) {
         super(origin); // call the superclass' constructor
         maxSpeed = 1.5 + ((Math.random() * 30)/5);
         savedMaxSpeed = maxSpeed;
         speed = maxSpeed;
+        image = new GreenfootImage("images/CarImages/car0" + Greenfoot.getRandomNumber(6) + ".png");
+        setImage(image);
         yOffset = 0;
     }
 

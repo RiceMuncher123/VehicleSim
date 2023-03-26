@@ -53,7 +53,7 @@ public class LaneChecker extends SuperSmoothMover
             Bus busInfrontTopHalf = (Bus)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, -4, Bus.class);
             Vehicle vInfrontBottomLane = (Vehicle)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, +48, Vehicle.class);
             Vehicle vInfrontSameLane = (Vehicle)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Vehicle.class);
-
+            
             //null = ethier there is no bus or it's the top half of the bus
 
             //If it is a vehicle exclusing bus's offset

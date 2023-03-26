@@ -1,0 +1,14 @@
+#BlueJ class context
+comment0.target=Robber
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Robber\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=direction
+comment1.target=Robber(int)
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ EnterVehicle()
+comment4.params=
+comment4.target=void\ takeAStep()
+comment5.params=
+comment5.target=void\ knockDown()
+numComments=6

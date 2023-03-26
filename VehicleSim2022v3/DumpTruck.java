@@ -9,6 +9,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class DumpTruck extends Vehicle
 {
     GreenfootImage image = new GreenfootImage("DumpTruck.png");
+    protected boolean addedWheelBarrow;
     public DumpTruck(VehicleSpawner origin){
         super(origin);
         isConstructionVehicle = true;
@@ -17,12 +18,16 @@ public class DumpTruck extends Vehicle
         savedMaxSpeed = maxSpeed;
         image.scale(110,70);
         setImage(image);
+        addedWheelBarrow = false;
     }
-
+    
     public boolean checkHitPedestrian () {
         Pedestrian p = (Pedestrian)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Pedestrian.class);
-
-        if (p != null){
+        WheelBarrowWorker w = (WheelBarrowWorker)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, WheelBarrowWorker.class);
+        if(w != null && w.getClass() == WheelBarrowWorker.class){
+            return false;
+        }
+        else if (p != null){
             p.knockDown();
             return true;
         }
@@ -35,6 +40,15 @@ public class DumpTruck extends Vehicle
      */
     public void act()
     {
+        if(!addedWheelBarrow){
+            if(getY() > getWorld().getHeight()/2){
+                getWorld().addObject (new WheelBarrowWorker (1, speed), (getImage().getWidth()/2), getY());
+            }
+            else{
+                getWorld().addObject (new WheelBarrowWorker (1, speed), (getImage().getWidth()/2), getY());
+            }
+            addedWheelBarrow = true;
+        }
         checkHitPedestrian();
         drive();
         if (checkEdge()){

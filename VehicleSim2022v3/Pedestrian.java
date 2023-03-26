@@ -25,6 +25,7 @@ public abstract class Pedestrian extends SuperSmoothMover
     protected int yDestination;
     protected double xSpeed;
     protected double ySpeed;
+    GreenfootImage image;
     public Pedestrian(int direction) {
         // choose a random speed
         maxSpeed = Math.random() * 2 + 1;
@@ -43,6 +44,8 @@ public abstract class Pedestrian extends SuperSmoothMover
         // If there is a v
 
     }
+
+    protected abstract void takeAStep();
 
     /**
      * Method to cause this Pedestrian to become knocked down - stop moving, turn onto side
@@ -89,22 +92,8 @@ public abstract class Pedestrian extends SuperSmoothMover
                 setRotation(0);
                 maxSpeed = savedMaxSpeed;
 
-                if (getOneObjectAtOffset(0, (int)(direction * getImage().getHeight()/2 + (int)(direction * speed)), Vehicle.class) == null){
-                    setLocation (getX(), getY() + (int)(speed*direction));
-                }
-                if(getClass() != JWalkPedestrian.class){
-                    if (direction == -1 && getY() < 100){
-                        getWorld().removeObject(this);
-                    } else if (direction == 1 && getY() > 550){
-                        getWorld().removeObject(this);
-                    }
+                takeAStep();
 
-                }
-                else{
-                    if (getOneObjectAtOffset((int)xSpeed, (int)(direction * getImage().getHeight()/2 + (int)(direction * ySpeed)), Vehicle.class) == null){
-                        setLocation(getX() + xSpeed, getY() + ySpeed);
-                    }
-                }
             }
         }
     }

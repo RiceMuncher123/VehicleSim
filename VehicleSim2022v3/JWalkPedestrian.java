@@ -13,7 +13,6 @@ public class JWalkPedestrian extends Pedestrian
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     protected boolean hasSetLocation;
-    GreenfootImage image;
     public JWalkPedestrian(int direction){
         super(direction);
         image = new GreenfootImage("images/PedestrianImages/PedestrianImg" + Greenfoot.getRandomNumber(11) + ".png");
@@ -72,6 +71,18 @@ public class JWalkPedestrian extends Pedestrian
         if(xSpeed < 0){
             image.mirrorHorizontally();
             setImage(image);
+        }
+    }
+
+    public void takeAStep(){
+        if (getOneObjectAtOffset((int)xSpeed, (int)(direction * getImage().getHeight()/2 + (int)(direction * ySpeed)), Vehicle.class) == null){
+            setLocation(getX() + xSpeed, getY() + ySpeed);
+        }
+        if (direction == -1 && getY() < 0){
+            getWorld().removeObject(this);
+        } else if (direction == 1 && getY() > 600){
+            getWorld().removeObject(this);
+
         }
     }
 

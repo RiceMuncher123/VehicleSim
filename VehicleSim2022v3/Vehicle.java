@@ -31,6 +31,8 @@ public abstract class Vehicle extends SuperSmoothMover
     protected int turnCoolDown;
     protected boolean checkedLeft = false;
     protected boolean checkedRight = false;
+    protected boolean beingRobbed = false;
+    protected int robbedTimer;
     //make a stat bar of stats to fatalities to sucessful across
     //Make vehicles that hit eachother to swerve on other lanes
 
@@ -39,6 +41,7 @@ public abstract class Vehicle extends SuperSmoothMover
     public Vehicle (VehicleSpawner origin) {
         this.origin = origin;
         moving = true;
+        robbedTimer = 0;
         turnCoolDown = 0;
         if (origin.facesRightward()){
             direction = 1;
@@ -129,8 +132,15 @@ public abstract class Vehicle extends SuperSmoothMover
         // since every Vehicle "promises" to have a getSpeed() method,
         // we can call that on any vehicle to find out it's speed
 
-        checkIfGlobalAffect();
-        if(VehicleWorld.getEffectType() != 0){
+        if(checkIfGlobalAffect()){
+            if(isSwitchingLanes){
+                isSwitchingLanes = false;
+                switchingLeft = false;
+                switchingRight = false;
+            }
+            move(direction*speed);
+        }
+        else if(VehicleWorld.getEffectType() != 0){
             globalAftermath();
             if(bullDozerHit){
                 ifHitByBulldozer();
@@ -139,16 +149,23 @@ public abstract class Vehicle extends SuperSmoothMover
                 checkIsOnConcrete();
                 LaneChecker lcLeftLane = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
                 LaneChecker lcRightLane = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);    
-                LaneChecker lcFront = (LaneChecker)getOneObjectAtOffset(direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, LaneChecker.class);  
-                if(!isSwitchingLanes){
+                LaneChecker lcFront = (LaneChecker)getOneObjectAtOffset(direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, LaneChecker.class);
+                WheelBarrowWorker worker = (WheelBarrowWorker) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed+1), 0, WheelBarrowWorker.class);
+                if((worker != null && !isSwitchingLanes && getX() > 10) || (beingRobbed && robbedTimer < 31)){
+                    if(beingRobbed){
+                        robbedTimer++;
+                    }
+                    speed = 0;
+                }
+                else if(!isSwitchingLanes){
                     Vehicle ahead = (Vehicle) getOneObjectAtOffset (direction * (int)(speed + getImage().getWidth()/2 + maxSpeed), 0, Vehicle.class);
+                    VehicleWorld world = (VehicleWorld) getWorld();
                     //change to if turning left and right instead of turning left
-
                     if (ahead == null)
                     {
                         speed = maxSpeed;
                     }
-                    else if(ahead.getIsSwitchingLanes() == false && turnCoolDown > 120){
+                    else if(ahead.getIsSwitchingLanes() == false && turnCoolDown > 120 && world.getActs() > 120){
                         lcLeftLane = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
                         lcRightLane = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);        
                         if(lcLeftLane == null){
@@ -213,6 +230,7 @@ public abstract class Vehicle extends SuperSmoothMover
                     }
                     turnCoolDown = 0;
                 }
+
                 turnCoolDown++;
                 move (speed * direction);
 
@@ -220,23 +238,27 @@ public abstract class Vehicle extends SuperSmoothMover
         }  
     }
 
+    public void setBeingRobbedTrue(){
+        beingRobbed = true;
+    }
+
+    public void unSetBeingRobbedFalse(){
+        beingRobbed = false;
+    }
+
     public boolean getIsSwitchingLanes(){
         return isSwitchingLanes;
     }
 
-    public boolean trySwitchLanes(){
-        //Check if existing lane checkers exist
+    // public boolean checkHitGasTankTruck () {
+    // GasTankTruck Truck = (GasTankTruck)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, GasTankTruck.class);
 
-        return false;
-
-        //if they do set speed to front vehicle speed
-        //else you want to place lane checkers
-        //once you place lane checkers check if those lane checkers r touching vehicles
-        //if they are not then turn left
-
-        //if they are delete left lane checker and check right
-
-    }
+    // if (Truck != null){
+    // Truck.explode();
+    // return true;
+    // }
+    // return false;
+    // }
 
     public boolean checkSwitchedLeftLane(int destinationY, double speed){
         if(getY() -speed <= destinationY){
@@ -288,36 +310,6 @@ public abstract class Vehicle extends SuperSmoothMover
         return false;
     }
 
-    // public boolean checkLeftLane(){
-    // LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, -48-6, LaneChecker.class);
-    // if(lc != null){
-    // if(lc.amTouchingVehicle() == true){
-    // getWorld().removeObject(lc);
-    // return false;
-    // }
-    // else{
-    // getWorld().removeObject(lc);    
-    // return true;
-    // }
-    // }
-    // return false;
-    // }
-
-    // public boolean checkRightLane(){
-    // LaneChecker lc = (LaneChecker)getOneObjectAtOffset(0, +48+6, LaneChecker.class);
-    // if(lc != null){
-    // if(lc.amTouchingVehicle() == true){
-    // getWorld().removeObject(lc);    
-    // return false;
-    // }
-    // else{
-    // getWorld().removeObject(lc);
-    // return true;
-    // }
-    // }
-    // return false;
-    // }
-
     /**
      * An accessor that can be used to get this Vehicle's speed. Used, for example, when a vehicle wants to see
      * if a faster vehicle is ahead in the lane.
@@ -326,7 +318,7 @@ public abstract class Vehicle extends SuperSmoothMover
         return speed;
     }
 
-    public void checkIfGlobalAffect(){
+    public boolean checkIfGlobalAffect(){
         if(VehicleWorld.isEffectActive()){
             if(VehicleWorld.getEffectType() == 0){
                 if(getRotation() == 0 || getRotation() == 180)
@@ -339,7 +331,9 @@ public abstract class Vehicle extends SuperSmoothMover
             else if(VehicleWorld.getEffectType() == 1){
                 maxSpeed -= 0.05;
             }
+            return true;
         }
+        return false;
     }
 
     public void globalAftermath(){

@@ -39,7 +39,7 @@ public class VehicleWorld extends World
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
         super(800, 600, 1, false); 
         effectActive = false;
-        setPaintOrder (Pedestrian.class, Vehicle.class,Concrete.class);
+        setPaintOrder (Explosion.class,Pedestrian.class, Vehicle.class,Concrete.class);
         Greenfoot.setSpeed(50);
 
         // set up background
@@ -48,7 +48,7 @@ public class VehicleWorld extends World
         setBackground (background);
 
         // Set critical variables
-        globalAffectOn = false;
+        globalAffectOn = true;
         laneCount = 6;
         laneHeight = 48;
         spaceBetweenLanes = 6;
@@ -82,7 +82,7 @@ public class VehicleWorld extends World
         if (Greenfoot.getRandomNumber(15) == 0){
             int lane = Greenfoot.getRandomNumber(laneCount);
             if (!laneSpawners[lane].isTouchingVehicle() && !effectActive && acts > 120){
-                int vehicleType = Greenfoot.getRandomNumber(6);
+                int vehicleType = Greenfoot.getRandomNumber(8);
                 if (vehicleType == 0){
                     addObject(new Car(laneSpawners[lane]), 0, 0);
                 } else if (vehicleType == 1){
@@ -95,10 +95,13 @@ public class VehicleWorld extends World
                     addObject(new CementTruck(laneSpawners[lane]), 0, 0);
                 }
                 else if(vehicleType == 5){
-                    if(lane == 1)
-                        addObject(new DumpTruck(laneSpawners[lane]), 0, 0);
-                    else if(lane == 5)
-                         addObject(new DumpTruck(laneSpawners[lane]), 0, 0);
+                    addObject(new DumpTruck(laneSpawners[lane]), 0, 0);
+                }
+                else if(vehicleType == 6){
+                    addObject(new GasTankTruck(laneSpawners[lane]), 0, 0);
+                }
+                else if(vehicleType == 7){
+                    addObject(new WhiteVan(laneSpawners[lane]), 0, 0);
                 }
             }
         }
@@ -108,21 +111,18 @@ public class VehicleWorld extends World
             int xSpawnLocation = Greenfoot.getRandomNumber (600) + 100; // random between 99 and 699, so not near edges
             boolean spawnAtTop = Greenfoot.getRandomNumber(2) == 0 ? true : false;
             if (spawnAtTop){
-                int pedestrianType = Greenfoot.getRandomNumber(6);
+                int pedestrianType = Greenfoot.getRandomNumber(2);
                 if(pedestrianType == 0)
-                    addObject (new WheelBarrowWorker (1), xSpawnLocation, 50);
-                else if(pedestrianType == 1)
-                    addObject(new Pedestrian1 (1), xSpawnLocation, 50);
-                else if(pedestrianType == 2)
                     addObject(new JWalkPedestrian (1), xSpawnLocation,50);
+                else if(pedestrianType == 1)
+                    addObject(new Pedestrian1 (1), xSpawnLocation, 50);    
             } else {
-                int pedestrianType = Greenfoot.getRandomNumber(6);
+                int pedestrianType = Greenfoot.getRandomNumber(2);
                 if(pedestrianType == 0)
-                    addObject (new WheelBarrowWorker (-1), xSpawnLocation, 550);
+                    addObject(new JWalkPedestrian (-1), xSpawnLocation, 550);
                 else if(pedestrianType == 1)
                     addObject(new Pedestrian1 (-1), xSpawnLocation, 550);
-                else if(pedestrianType == 2)
-                    addObject(new JWalkPedestrian (-1), xSpawnLocation, 550);
+
             }
         }
         if(globalAffectOn){
@@ -168,6 +168,9 @@ public class VehicleWorld extends World
      *  @param lane the lane number (zero-indexed)
      *  @return int the y position of the lane's center, or -1 if invalid
      */
+    public int getActs(){
+        return acts;
+    }
     public int getLaneY (int lane){
         if (lane < lanePositionsY.length){
             return lanePositionsY[lane];

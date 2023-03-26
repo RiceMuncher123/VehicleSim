@@ -9,7 +9,6 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Pedestrian1 extends Pedestrian
 {
     //GreenfootImage image = new GreenfootImage("WheelBarrow.png");
-    GreenfootImage image;
     public Pedestrian1(int direction){
         super(direction);
         savedMaxSpeed = maxSpeed;
@@ -21,6 +20,18 @@ public class Pedestrian1 extends Pedestrian
         }
         setImage(image);
 
+    }
+
+    public void takeAStep(){
+        if (getOneObjectAtOffset(0, (int)(direction * getImage().getHeight()/2 + (int)(direction * speed)), Vehicle.class) == null){
+            setLocation (getX(), getY() + (int)(speed*direction));
+        }
+        if (direction == -1 && getY() < 0){
+            getWorld().removeObject(this);
+        } else if (direction == 1 && getY() > 600){
+            getWorld().removeObject(this);
+
+        }
     }
 
     public void act()
