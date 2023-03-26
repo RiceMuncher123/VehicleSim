@@ -23,7 +23,7 @@ public class DumpTruck extends Vehicle
     
     public boolean checkHitPedestrian () {
         Pedestrian p = (Pedestrian)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Pedestrian.class);
-        WheelBarrowWorker w = (WheelBarrowWorker)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, WheelBarrowWorker.class);
+        WheelBarrowWorker w = (WheelBarrowWorker)getOneObjectAtOffset(((int)speed) + getImage().getWidth()/2, 0, WheelBarrowWorker.class);
         if(w != null && w.getClass() == WheelBarrowWorker.class){
             return false;
         }
@@ -40,12 +40,13 @@ public class DumpTruck extends Vehicle
      */
     public void act()
     {
+        //(getImage().getWidth()/2)
         if(!addedWheelBarrow){
             if(getY() > getWorld().getHeight()/2){
-                getWorld().addObject (new WheelBarrowWorker (1, speed), (getImage().getWidth()/2), getY());
+                getWorld().addObject (new WheelBarrowWorker (1, speed), 0, getY());
             }
             else{
-                getWorld().addObject (new WheelBarrowWorker (1, speed), (getImage().getWidth()/2), getY());
+                getWorld().addObject (new WheelBarrowWorker (1, speed), 0, getY());
             }
             addedWheelBarrow = true;
         }

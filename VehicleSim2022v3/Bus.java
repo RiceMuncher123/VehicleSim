@@ -32,7 +32,7 @@ public class Bus extends Vehicle
             isWaiting = true;
             curWaitTime = maxWaitTime;
         }
-        if(isMoving)
+        if(isMoving || bullDozerHit)
             drive();
         else{
             curWaitTime--;

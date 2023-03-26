@@ -15,6 +15,8 @@ public class WhiteVan extends Vehicle
     GreenfootImage image;
     protected boolean robberReleased;
     protected boolean driveSwitch;
+    Robber rob = new Robber(1);
+
     public WhiteVan(VehicleSpawner origin) {
         super(origin);
         image = new GreenfootImage("images/WhiteVan.png");
@@ -32,11 +34,10 @@ public class WhiteVan extends Vehicle
     {
         Vehicle frontCheck = (Vehicle)getOneObjectAtOffset((int)speed*2 + getImage().getWidth()/2, 0, Vehicle.class);
         Vehicle backCheck = (Vehicle)getOneObjectAtOffset((int)speed*2 - getImage().getWidth()/2, 0, Vehicle.class);
-        Robber rob = new Robber(1);
         if(robberReleased == false){
 
             checkIsOnConcrete();
-            
+
             if(frontCheck != null){
                 driveSwitch = false;
                 //stop front vehicle
@@ -67,6 +68,9 @@ public class WhiteVan extends Vehicle
         else{
             checkIsOnConcrete();
             drive();
+        }
+        if (checkEdge()){
+            getWorld().removeObject(this);
         }
 
     }

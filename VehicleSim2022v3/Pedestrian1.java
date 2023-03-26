@@ -32,6 +32,9 @@ public class Pedestrian1 extends Pedestrian
             getWorld().removeObject(this);
 
         }
+        else if(getX() < -50 || getX() > 810){
+            getWorld().removeObject(this);
+        }
     }
 
     public void act()

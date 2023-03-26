@@ -19,9 +19,19 @@ public class Explosion extends Actor
         setImage(image);
         actTimer = 0;
     }
+
+    protected void addedToWorld(World worlds)
+    {
+        VehicleWorld world = (VehicleWorld) getWorld();
+        world.playExplosion();
+    }
+
     public void act()
     {
+        VehicleWorld world = (VehicleWorld) getWorld();
+
         if(actTimer == 30){
+            world.stopExplosion();
             getWorld().removeObject(this);
         }
         actTimer++;

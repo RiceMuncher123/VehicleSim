@@ -46,7 +46,7 @@ public class WheelBarrowWorker extends Pedestrian
                 actTimer = 0;
             }
         }
-        if(actTimer == 60){
+        if(actTimer == 60 || (getX() < -10 || getX() > 810 || getY() < -10 || getY() > 610)){
             getWorld().removeObject(this);
         }
     }

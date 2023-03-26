@@ -30,6 +30,16 @@ public class VehicleWorld extends World
     private int acts;
     protected static int typeGlobalEffect;
     private boolean globalAffectOn;
+    protected boolean screamActive = true;
+    protected int screamCounter = 0;
+    
+    private GreenfootSound tornadoSound;
+    private GreenfootSound roadAmbience;
+    private GreenfootSound manyCarsHonk;
+    private GreenfootSound strongWindSound;
+    private GreenfootSound GasTankExplosion;
+    private GreenfootSound concreteLay;
+
     /**
      * Constructor for objects of class MyWorld.
      * 
@@ -46,9 +56,13 @@ public class VehicleWorld extends World
         background = new GreenfootImage ("background01.png");
         backroundTornado = new GreenfootImage("background02.png");
         setBackground (background);
-
+        tornadoSound = new GreenfootSound("TornadoSound.mp3");
+        roadAmbience = new GreenfootSound("RoadAmbience.mp3");
+        manyCarsHonk = new GreenfootSound("ManyCarsHonking.mp3");
+        strongWindSound = new GreenfootSound("StrongWinds.mp3");
+        GasTankExplosion = new GreenfootSound("Explosion.mp3");
         // Set critical variables
-        globalAffectOn = true;
+        globalAffectOn = false;
         laneCount = 6;
         laneHeight = 48;
         spaceBetweenLanes = 6;
@@ -61,7 +75,25 @@ public class VehicleWorld extends World
 
         // Prepare lanes method - draws the lanes
         lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+    }
 
+    public void started(){
+        roadAmbience.playLoop();
+    }
+
+    public void stopped(){
+        roadAmbience.stop();
+    }
+
+    public void setScreamTrue(){
+        screamActive = true;
+    }
+    public void setScreamFalse(){
+        screamCounter = 0;
+        screamActive = false;
+    }
+    public boolean getScreamStatus(){
+        return screamActive;
     }
 
     public void act () {
@@ -78,7 +110,11 @@ public class VehicleWorld extends World
 
     private void spawn () {
         // Chance to spawn a vehicle
+        screamCounter++;
         acts++;
+        if(screamCounter == 240){
+            setScreamTrue();
+        }
         if (Greenfoot.getRandomNumber(15) == 0){
             int lane = Greenfoot.getRandomNumber(laneCount);
             if (!laneSpawners[lane].isTouchingVehicle() && !effectActive && acts > 120){
@@ -128,15 +164,19 @@ public class VehicleWorld extends World
         if(globalAffectOn){
             if (!effectActive && Greenfoot.getRandomNumber(400) == 0 && acts >= 300){
                 typeGlobalEffect = Greenfoot.getRandomNumber(2);
+                stopCityAmbience();
                 if(typeGlobalEffect == 0){
                     addObject (new Tornado(), 400, 300);
-                    addObject(new ThunderClouds("right"), 0, 20 + Greenfoot.getRandomNumber(200));
-                    addObject(new ThunderClouds("left"), 600, 20 + Greenfoot.getRandomNumber(200));
+                    addObject(new ThunderClouds("right"), 0, 20 + Greenfoot.getRandomNumber(50));
+                    addObject(new ThunderClouds("left"), 600, 20 + Greenfoot.getRandomNumber(50));
                     setBackground(backroundTornado);
                     lanePositionsY = prepareLanes (this, backroundTornado, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+                    tornadoSound.playLoop();
+                    manyCarsHonk.play();
                 }
                 else if(typeGlobalEffect == 1){
                     addObject (new StrongWinds(), 700, 50);
+                    strongWindSound.play();
                 }
 
                 effectActive = true;
@@ -145,19 +185,46 @@ public class VehicleWorld extends World
                 effectActive = false;
                 acts = 0;
                 typeGlobalEffect = 100;
+                playCityAmbience();
             }
             else if (effectActive && typeGlobalEffect == 1 && getObjects(StrongWinds.class).size() == 0){
                 effectActive = false;
                 typeGlobalEffect = 100;
-
+                stopStrongWindSounds();
+                playCityAmbience();
                 acts = 0;
             }
             if(typeGlobalEffect == 100 && acts == 180){
                 setBackground(background);
                 lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
+                //END NADO SOUNDS
+                tornadoSound.stop();
             }
         }
 
+    }
+
+    public void stopTornadoSound(){
+        tornadoSound.stop();
+    }
+
+    public void stopStrongWindSounds(){
+        strongWindSound.stop();
+    }
+
+    public void stopCityAmbience(){
+        roadAmbience.stop();
+    }
+
+    public void playCityAmbience(){
+        roadAmbience.playLoop();
+    }
+
+    public void playExplosion(){
+        GasTankExplosion.playLoop();
+    }
+    public void stopExplosion(){
+        GasTankExplosion.stop();
     }
 
     /**
@@ -171,6 +238,7 @@ public class VehicleWorld extends World
     public int getActs(){
         return acts;
     }
+
     public int getLaneY (int lane){
         if (lane < lanePositionsY.length){
             return lanePositionsY[lane];

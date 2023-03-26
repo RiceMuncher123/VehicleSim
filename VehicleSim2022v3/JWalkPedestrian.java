@@ -78,11 +78,14 @@ public class JWalkPedestrian extends Pedestrian
         if (getOneObjectAtOffset((int)xSpeed, (int)(direction * getImage().getHeight()/2 + (int)(direction * ySpeed)), Vehicle.class) == null){
             setLocation(getX() + xSpeed, getY() + ySpeed);
         }
-        if (direction == -1 && getY() < 0){
+        if (ySpeed < 0 && getY() < 0){
             getWorld().removeObject(this);
-        } else if (direction == 1 && getY() > 600){
+        } else if (ySpeed > 0 && getY() > 600){
             getWorld().removeObject(this);
 
+        }
+        else if(getX() < -10 || getX() > 810){
+            getWorld().removeObject(this);
         }
     }
 

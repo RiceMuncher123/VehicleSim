@@ -46,7 +46,6 @@ public class GasTankTruck extends Vehicle
         getWorld().addObject(e, getX(), getY());
         ArrayList<Pedestrian> pedestrianList = (ArrayList<Pedestrian>) getObjectsInRange​(e.getImage().getWidth()/2, Pedestrian.class);    
         ArrayList<Vehicle> vehicleList = (ArrayList<Vehicle>) getObjectsInRange​(e.getImage().getWidth(), Vehicle.class);
-        
         for(Vehicle v : vehicleList){
             getWorld().removeObject(v);
         }

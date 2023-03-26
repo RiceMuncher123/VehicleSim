@@ -25,6 +25,7 @@ public abstract class Pedestrian extends SuperSmoothMover
     protected int yDestination;
     protected double xSpeed;
     protected double ySpeed;
+    GreenfootSound[] ScreamArr = new GreenfootSound[3];
     GreenfootImage image;
     public Pedestrian(int direction) {
         // choose a random speed
@@ -33,6 +34,9 @@ public abstract class Pedestrian extends SuperSmoothMover
         // start as awake 
         awake = true;
         this.direction = direction;
+        for(int i = 0; i < 3; i++){
+            ScreamArr[i] = new GreenfootSound("PedestrianSound/Scream"+i+".mp3");
+        }
     }
 
     /**
@@ -99,6 +103,11 @@ public abstract class Pedestrian extends SuperSmoothMover
     }
 
     public void knockDown () {
+        VehicleWorld world = (VehicleWorld) getWorld();
+        if(Greenfoot.getRandomNumber(11) == 0 && world.getScreamStatus()){
+            ScreamArr[Greenfoot.getRandomNumber(3)].play();
+            world.setScreamFalse();
+        }
         speed = 0;
         setRotation (90);
         awake = false;
