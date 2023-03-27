@@ -18,10 +18,7 @@ public class Tornado extends Effect
         image = new GreenfootImage("Tornado.png");
         image.scale(400,600);
         setImage(image);
-        // ArrayList<Vehicle> vehicles =  (ArrayList<Vehicle>) w.getObjects(Vehicle.class);
-        // for (Vehicle v : vehicles){
-        // v.tornadoMe();
-        // }
+        
     }
 
     /**
@@ -31,8 +28,7 @@ public class Tornado extends Effect
     public void act()
     {
         if (duration == 0){
-            // speed vehicles back up 
-            // TODO ==== !!!!! ===================
+            //Once lifespan is up, removes and turns off tornado sounds   
             VehicleWorld world = (VehicleWorld) getWorld();
             world.stopTornadoSound();
             getWorld().removeObject(this);

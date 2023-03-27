@@ -19,6 +19,7 @@ public class Concrete extends Actor
     }
     public void act()
     {
+        //Checks whether the concrete actor's lifetime is up or not
         lifeTime--;
         if(lifeTime == 0)
             getWorld().removeObject(this);

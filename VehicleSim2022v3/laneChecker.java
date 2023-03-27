@@ -22,6 +22,7 @@ public class LaneChecker extends SuperSmoothMover
 
     public LaneChecker (double speed, int direction, int vehicleWidth, String topOrBottomLane)
     {
+        //Sets up lane's prpoerties such as length,width, speed, direction, and visibily
         this.topOrBottomLane = topOrBottomLane;
         this.speed = speed;
         this.direction = direction;
@@ -77,7 +78,7 @@ public class LaneChecker extends SuperSmoothMover
             }
         }
     }
-
+    //Returns if is touching a vehicle or not
     public boolean isTouchingVehicle () {
         return this.isTouching(Vehicle.class);
     }

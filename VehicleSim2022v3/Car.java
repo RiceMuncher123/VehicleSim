@@ -12,6 +12,7 @@ public class Car extends Vehicle
         maxSpeed = 1.5 + ((Math.random() * 30)/5);
         savedMaxSpeed = maxSpeed;
         speed = maxSpeed;
+        //Sets the image to a randomized color from the CarImages file
         image = new GreenfootImage("images/CarImages/car0" + Greenfoot.getRandomNumber(6) + ".png");
         setImage(image);
         yOffset = 0;

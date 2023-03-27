@@ -28,13 +28,16 @@ public class Bus extends Vehicle
     public void act()
     {
         if(checkHitPedestrian()){
+            //If it did hit, switches the move and waiting boolean switches
             isMoving = false;
             isWaiting = true;
             curWaitTime = maxWaitTime;
         }
+        //Checks whether it is moving or if it has been hit by a bull dozer
         if(isMoving || bullDozerHit)
             drive();
         else{
+            //waits until the wait timer is 0 for the wait time for a pedestrian to board the bus
             curWaitTime--;
             if(curWaitTime == 0){
                 isMoving = true;
@@ -52,6 +55,7 @@ public class Bus extends Vehicle
 
         Pedestrian p = (Pedestrian)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Pedestrian.class);
         if (p != null){
+            //calls the board bus method which removes the pedestrian from the world
             p.boardBus();
             return true;
         }   

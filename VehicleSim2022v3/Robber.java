@@ -24,13 +24,15 @@ public class Robber extends Pedestrian
     public void act()
     {
         if(actCounter == 120){
-            EnterVehicle();
+            //Waits 2 seconds until it's enter's the vehicle
+            EnterVehicle(); 
         }
         actCounter++;
     }
 
 
     public void EnterVehicle(){
+        //Adds a pedestrian in the world , plays the audio sound of pedestrian being robbed and removes itself from the world after
         getWorld().addObject(new Pedestrian1(1), getX(), getY());
         VehicleWorld world = (VehicleWorld) getWorld();
         world.pedestrianPlead();

@@ -19,8 +19,10 @@ public class ThunderClouds extends Effect
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     public ThunderClouds(String directionMoveTo){
+        //Sets the direction the thunderclouds move in
         if(directionMoveTo.equals("left"))
             direction = -1;
+        //Sets the destination the thunder cloud moves towards to
         xLocationMoveTo = Greenfoot.getRandomNumber(600);
         fadeTimeLeft = 240;
     }
@@ -36,13 +38,16 @@ public class ThunderClouds extends Effect
     {  
         if(getX() != xLocationMoveTo)
             move(speed*direction);
+        //Turns on the fade switch once the tornado class is out of the world
         if(getObjectsInRange(600, Tornado.class).size() == 1 &&  getObjectsInRange(600, Tornado.class).get(0).getDuration() == 90){
             fadeSwitch = true;
         }
+        //If the fade switch is on starts to fade
         if(fadeSwitch){
             fade (fadeTimeLeft, 240);
             fadeTimeLeft--;
         }
+        //Once the actor is completley faded out, it removes itself from the world
         if(fadeTimeLeft == 0){
             getWorld().removeObject(this);
         }

@@ -31,6 +31,7 @@ public class Explosion extends Actor
         VehicleWorld world = (VehicleWorld) getWorld();
 
         if(actTimer == 30){
+            //Once lifespan is up, stops the explosion sound and removes itself from the world
             world.stopExplosion();
             getWorld().removeObject(this);
         }

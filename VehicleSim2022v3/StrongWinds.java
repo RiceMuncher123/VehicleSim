@@ -15,13 +15,14 @@ public class StrongWinds extends Effect
     protected int speed = 3;
     public void act()
     {
+        //Has the cloud move until its 300 pixels to the left of the border of the world
         move(speed*-1);
         if(getX() < -300){
             getWorld().removeObject(this);
-            //switch blow global affect
         }
     }
     public void addedToWorld (World w){
+        //Sets up the image and scaling when added to word
         image = new GreenfootImage("blowcloud.png");
         image.scale(200,100);
         setImage(image);

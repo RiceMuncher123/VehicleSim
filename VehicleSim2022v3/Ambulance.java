@@ -30,9 +30,9 @@ public class Ambulance extends Vehicle
     }
 
     public boolean checkHitPedestrian () {
-        // currently empty
         Pedestrian p = (Pedestrian)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Pedestrian.class);
         if (p != null){
+            //If it is not spinning heal the pedestrian else, send it flying too
             if(!isSpinning){
                 p.healMe();
             }

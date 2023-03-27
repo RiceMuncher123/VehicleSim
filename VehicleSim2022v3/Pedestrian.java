@@ -34,6 +34,7 @@ public abstract class Pedestrian extends SuperSmoothMover
         // start as awake 
         awake = true;
         this.direction = direction;
+        //Populates the array with the custom sound files
         for(int i = 0; i < 3; i++){
             ScreamArr[i] = new GreenfootSound("PedestrianSound/Scream"+i+".mp3");
         }
@@ -43,18 +44,13 @@ public abstract class Pedestrian extends SuperSmoothMover
      * Act - do whatever the Pedestrian wants to do. This method is called whenever
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
-    public void act()
-    {
-        // If there is a v
-
-    }
-
+    //takeAStep manages how each pedestrian moves (vertical/diagonal)
     protected abstract void takeAStep();
 
     /**
      * Method to cause this Pedestrian to become knocked down - stop moving, turn onto side
      */
-
+    //Manages the interactions between pedestrians (such as what happens during a tornado or when hit by a tornado?)
     public void walk(){
         if(gotHeight == false){
             laneYCoord = 300;

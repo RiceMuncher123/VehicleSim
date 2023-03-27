@@ -35,10 +35,10 @@ public class BullDozer extends Vehicle
     }
 
     public boolean checkHitPedestrian (){
-        // currently empty
         Pedestrian p = (Pedestrian)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Pedestrian.class);
 
         if (p != null){
+            //sends the pedestrian flying if there is one infront of it
             p.fling();
             return true;
         }

@@ -248,6 +248,7 @@ public class VehicleWorld extends World
         background = new GreenfootImage ("background01.png");
         backroundTornado = new GreenfootImage("background02.png");
         setBackground (background);
+        //Sets up audio files
         tornadoSound = new GreenfootSound("TornadoSound.mp3");
         roadAmbience = new GreenfootSound("RoadAmbience.mp3");
         manyCarsHonk = new GreenfootSound("ManyCarsHonking.mp3");
@@ -269,24 +270,24 @@ public class VehicleWorld extends World
         // Prepare lanes method - draws the lanes
         lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
     }
-
+    //When the program is started, it plays the road ambience audio file
     public void started(){
         roadAmbience.playLoop();
     }
-
+    //When the program is paused/stops, it stops the road ambience audio file
     public void stopped(){
         roadAmbience.stop();
     }
-
+    //Sets the screamActiveVariable to true
     public void setScreamTrue(){
         screamActive = true;
     }
-
+    //Sets the screamActive variable to false and resets the timer
     public void setScreamFalse(){
         screamCounter = 0;
         screamActive = false;
     }
-
+    //Returns whether a pedestrian can scream or not
     public boolean getScreamStatus(){
         return screamActive;
     }
@@ -294,22 +295,23 @@ public class VehicleWorld extends World
     public void act () {
         spawn();
     }
-
+    //check whether a global effect is active or not
     public static boolean isEffectActive () {
         return effectActive;
     }
-
+    //Returns the type of global effect 0 = tornado 1 = strong winds
     public static int getEffectType(){
         return typeGlobalEffect;
     }
 
     private void spawn () {
-        // Chance to spawn a vehicle
+        //Manages the cooldown for pedestrian scream cooldowns as well global effect cooldowns
         screamCounter++;
         acts++;
         if(screamCounter == 240){
             setScreamTrue();
         }
+        // Chance to spawn a vehicle
         if (Greenfoot.getRandomNumber(15) == 0){
             int lane = Greenfoot.getRandomNumber(laneCount);
             if (!laneSpawners[lane].isTouchingVehicle() && !effectActive && acts > 120){
@@ -356,10 +358,13 @@ public class VehicleWorld extends World
 
             }
         }
+        //Checks if the globalAffectOn boolean is on which lets the user decide to whether have global effects or not
         if(globalAffectOn){
+            //Chekcs whether the cooldown and if a global affect is not active to do a global effect
             if (!effectActive && Greenfoot.getRandomNumber(400) == 0 && acts >= 300){
                 typeGlobalEffect = Greenfoot.getRandomNumber(2);
                 stopCityAmbience();
+                //Randomzies which global effect to do
                 if(typeGlobalEffect == 0){
                     addObject (new Tornado(), 400, 300);
                     addObject(new ThunderClouds("right"), 0, 20 + Greenfoot.getRandomNumber(50));
@@ -376,6 +381,7 @@ public class VehicleWorld extends World
 
                 effectActive = true;
             }
+            //if statements to turn off the global effects and sounds
             if (effectActive && typeGlobalEffect == 0 && getObjects(Tornado.class).size() == 0){
                 effectActive = false;
                 acts = 0;
@@ -389,6 +395,7 @@ public class VehicleWorld extends World
                 playCityAmbience();
                 acts = 0;
             }
+            //Switches the backround after the tornado global effect duration runs out
             if(typeGlobalEffect == 100 && acts == 180){
                 setBackground(background);
                 lanePositionsY = prepareLanes (this, background, laneSpawners, 222, laneHeight, laneCount, spaceBetweenLanes, twoWayTraffic, splitAtCenter);
@@ -398,35 +405,35 @@ public class VehicleWorld extends World
         }
 
     }
-
+    //Stops the tornado sound for the global effect
     public void stopTornadoSound(){
         tornadoSound.stop();
     }
-
+    //Stops the sound for the strong wind global effect
     public void stopStrongWindSounds(){
         strongWindSound.stop();
     }
-
+    //Stops the city ambience called when there is a global effect active
     public void stopCityAmbience(){
         roadAmbience.stop();
     }
-
+    //Plays and loops the City Ambience during the simulation
     public void playCityAmbience(){
         roadAmbience.playLoop();
     }
-
+    //Plays the sound for the gas tank truck explosion
     public void playExplosion(){
         GasTankExplosion.playLoop();
     }
-
+    //Stops the sound for the gas tank truck explosion
     public void stopExplosion(){
         GasTankExplosion.stop();
     }
-
+    //Plays the sound for the pedestrian being robbed
     public void pedestrianPlead(){
         PedestrianPleadForHelp.play();
     }
-
+    //Returns the number of acts the world has committed since the last global effect
     public int getActs(){
         return acts;
     }
@@ -466,7 +473,7 @@ public class VehicleWorld extends World
         }
         return -1;
     }
-
+    //Returns the height for each lane
     public int getLaneHeight(){
         return laneHeight;
     }

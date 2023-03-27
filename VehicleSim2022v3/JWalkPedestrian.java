@@ -41,6 +41,7 @@ public class JWalkPedestrian extends Pedestrian
 
             ySpeed = -1*getY()/(timeToArrive* 60);
             if(getX() < getWorld().getWidth()/2){
+                //If it's on the left side of the world
                 xDestination = Greenfoot.getRandomNumber(getWorld().getWidth()/2) + getWorld().getWidth()/2;
                 xSpeed = (xDestination - getX()) / (timeToArrive* 60);
 
@@ -58,11 +59,13 @@ public class JWalkPedestrian extends Pedestrian
             yDestination = getWorld().getHeight();
             ySpeed = (yDestination - getY())/(timeToArrive* 60);
             if(getX() < getWorld().getWidth()/2){
+                //if its on the left of the world
                 xDestination = Greenfoot.getRandomNumber(getWorld().getWidth()/2) + getWorld().getWidth()/2;
                 xSpeed = (xDestination - getX()) / (timeToArrive* 60);
 
             }
             else if(getX() > getWorld().getWidth()/2){
+                //If its on the right of the world
                 xDestination = Greenfoot.getRandomNumber(getWorld().getWidth()/2);
                 xSpeed = (xDestination - getX())/(timeToArrive* 60);
 
@@ -92,6 +95,7 @@ public class JWalkPedestrian extends Pedestrian
     public void act()
     {
         if(!hasSetLocation){
+            //A if statement which runs once to set where the actor moves to
             setDestination(direction);
             hasSetLocation = true;
         }

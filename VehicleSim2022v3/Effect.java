@@ -14,12 +14,14 @@ public class Effect extends Actor
      */
     protected GreenfootImage image;
     protected int newTransparency;
+    //Method which allows the effect subclasses to fade
     protected void fade (int timeLeft, int fadeTime){
         double percent = timeLeft / (double)fadeTime;
         newTransparency = (int)(percent * 255);
         image.setTransparency (newTransparency);
         
     }
+    //Returns the opacity of the image
     protected int getTransparency(){
         return newTransparency;
     }
