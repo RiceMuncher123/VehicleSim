@@ -1,19 +1,6 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * <h1>The new and vastly improved 2022 Vehicle Simulation Assignment.</h1>
- * <p> This is the first redo of the 8 year old project. Lanes are now drawn dynamically, allowing for
- *     much greater customization. Pedestrians can now move in two directions. The graphics are better
- *     and the interactions smoother.</p>
- * <p> The Pedestrians are not as dumb as before (they don't want straight into Vehicles) and the Vehicles
- *     do a somewhat better job detecting Pedestrians.</p>
- * 
- * Version Notes - Feb 2023
- * --> Includes grid <--> lane conversion method
- * --> Now starts with 1-way, 5 lane setup (easier)
- */
-
-/**
  * Notes:
  * The reference of "construction vehicles" refer to the following vehicles: Bull Dozer, Dump Truck, Cement Truck
  * Pedestrian sounds was recorded using my voice (hehe)
@@ -22,7 +9,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * Can turn off global affects in Vehicle world by setting the variable globalAffectOn in the constructor to false
  * Pedestrians sometimes screams to prevent overlap of audios and for other sounds to shine
  * Put all the pedestrian images within each class to make it more modular instead of having 10 different pedestrian classes which do the same thing
- * 
+ * ArrayLists were used in the GasTankTruck class as well the wheelbarrow pedestrian class
  * 
  * Bugs:
  * Vehicles sometimes go into each other during lane switches for only temporarily (found a solution)
