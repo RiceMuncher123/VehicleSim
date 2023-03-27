@@ -43,5 +43,5 @@ comment8.params=
 comment8.target=boolean\ getIsConstructionVehicle()
 comment9.params=
 comment9.target=void\ drive()
-comment9.text=\r\n\ Method\ that\ deals\ with\ movement.\ Speed\ can\ be\ set\ by\ individual\ subclasses\ in\ their\ constructors\r\n
+comment9.text=\r\n\ Method\ that\ deals\ with\ movement.\ Speed\ can\ be\ set\ by\ individual\ subclasses\ in\ their\ constructors\r\n\ Manages\ vehicle\ interactions\r\n
 numComments=21

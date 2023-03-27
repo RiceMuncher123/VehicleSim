@@ -44,7 +44,6 @@ public class LaneChecker extends SuperSmoothMover
         if(isAtEdge()){
             getWorld().removeObject(this);
         }
-        //amTouchingVehicle() ||       
     }
     public double getSpeed(){
         return speed;

@@ -44,6 +44,7 @@ public abstract class Vehicle extends SuperSmoothMover
         moving = true;
         robbedTimer = 0;
         turnCoolDown = 0;
+        //Sets direction
         if (origin.facesRightward()){
             direction = 1;
 
@@ -51,10 +52,11 @@ public abstract class Vehicle extends SuperSmoothMover
             direction = -1;
             getImage().mirrorHorizontally();
         }
+        //Assigns sound variables
         carHonk = new GreenfootSound("CarHonk.mp3");
         carAccelerate = new GreenfootSound("CarAccelerate.mp3");
     }
-
+    //Check if it is touching a vehicle and if so, send that vehicle flying
     public boolean checkHitVehicle(){
         Vehicle v = (Vehicle)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Vehicle.class);
         if (v != null && !v.getIsConstructionVehicle()){
@@ -63,7 +65,7 @@ public abstract class Vehicle extends SuperSmoothMover
         }
         return false;
     }
-
+    //Checks whether the vehicle is infront or touching concrete, if so, sets the speed to 1
     public boolean checkIsOnConcrete(){
         Concrete c = (Concrete)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Concrete.class);
         if(c != null && !isOnConcrete && !VehicleWorld.isEffectActive()){
@@ -93,7 +95,7 @@ public abstract class Vehicle extends SuperSmoothMover
      * is the potential for objects to disappear off-screen but still be fully acting and thus wasting resources
      * and affecting the simulation even though they are not visible.
      */
-
+    //Sets the isBullDozerHt Boolean to true and sends the vehicle upwards
     public void fling(){
         bullDozerHit = true;
         setLocation(getX()+1,getY()-8);
@@ -115,13 +117,14 @@ public abstract class Vehicle extends SuperSmoothMover
         }
         return false;
     }
-
+    //Returns whether the vehicle is a conctruction vehicle
     public boolean getIsConstructionVehicle(){
         return isConstructionVehicle;
     }
 
     /**
      * Method that deals with movement. Speed can be set by individual subclasses in their constructors
+     * Manages vehicle interactions
      */
     public void drive() 
     {
@@ -131,10 +134,7 @@ public abstract class Vehicle extends SuperSmoothMover
             gotHeight = true;
         }
 
-        // Ahead is a generic vehicle - we don't know what type BUT
-        // since every Vehicle "promises" to have a getSpeed() method,
-        // we can call that on any vehicle to find out it's speed
-
+        
         if(checkIfGlobalAffect()){
             if(isSwitchingLanes){
                 isSwitchingLanes = false;
@@ -245,29 +245,21 @@ public abstract class Vehicle extends SuperSmoothMover
             }
         }  
     }
-
+    //Sets the being robbed vehicle to true
     public void setBeingRobbedTrue(){
         beingRobbed = true;
     }
-
+    //Sets the being robbed variable to false
     public void unSetBeingRobbedFalse(){
         beingRobbed = false;
     }
-
+    //Returns if the vehicle is switching lanes
     public boolean getIsSwitchingLanes(){
         return isSwitchingLanes;
     }
 
-    // public boolean checkHitGasTankTruck () {
-    // GasTankTruck Truck = (GasTankTruck)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, GasTankTruck.class);
-
-    // if (Truck != null){
-    // Truck.explode();
-    // return true;
-    // }
-    // return false;
-    // }
-
+    
+    //returns whether if the vehicle is moving to the left lane
     public boolean checkSwitchedLeftLane(int destinationY, double speed){
         if(getY() -speed <= destinationY){
             setLocation(getX(),destinationY);
@@ -280,7 +272,7 @@ public abstract class Vehicle extends SuperSmoothMover
         move(direction*maxSpeed);
         return false;
     }
-
+    //returns whether if the vehicle is moving to the right lane
     public boolean checkSwitchedRightLane(int destinationY, double speed){
         if(getY() + speed >= destinationY){
             setLocation(getX(),destinationY);
@@ -294,7 +286,7 @@ public abstract class Vehicle extends SuperSmoothMover
 
         return false;
     }
-
+    //Puts a left lane checker if it is in a viable spot (if its to be placed off road it will not place)
     public boolean putLeftLaneChecker(int y){
         VehicleWorld world = (VehicleWorld) getWorld();
         int lane = world.getLane(y);
@@ -306,7 +298,7 @@ public abstract class Vehicle extends SuperSmoothMover
         return false;
 
     }
-
+    //Puts a right lane checker if it is in a viable spot (if its to be placed off road it will not place)
     public boolean putRightLaneChecker(int y){
         VehicleWorld world = (VehicleWorld) getWorld();
         int lane = world.getLane(y);
@@ -325,7 +317,7 @@ public abstract class Vehicle extends SuperSmoothMover
     public double getSpeed(){
         return speed;
     }
-
+    //Returns if there is an active gloval effect and if there is, ethier slows down the vehicle or sends the vehicle in the air
     public boolean checkIfGlobalAffect(){
         if(VehicleWorld.isEffectActive()){
             if(VehicleWorld.getEffectType() == 0){
@@ -343,7 +335,7 @@ public abstract class Vehicle extends SuperSmoothMover
         }
         return false;
     }
-
+    //Sets the vehicles back to its designated lane after a global effect
     public void globalAftermath(){
         if(!isSwitchingLanes){
             if(!bullDozerHit && getY() != laneYCoord){
@@ -359,7 +351,7 @@ public abstract class Vehicle extends SuperSmoothMover
             }
         }
     }
-
+    //A method which makes the vehicle spin and sends other vehicles flying in a chain reaction
     public void ifHitByBulldozer(){
         maxSpeed = savedMaxSpeed;
         checkHitVehicle();

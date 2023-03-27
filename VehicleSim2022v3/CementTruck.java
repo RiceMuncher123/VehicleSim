@@ -24,6 +24,7 @@ public class CementTruck extends Vehicle
     {
         checkHitPedestrian();
         drive();
+        //Adds a cement actor if it is not touching a concrete actor
         if(!isTouching(Concrete.class) && !VehicleWorld.isEffectActive())
             getWorld().addObject(new Concrete(), getX()-60, getY());            
         if (checkEdge()){

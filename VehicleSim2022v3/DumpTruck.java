@@ -25,6 +25,7 @@ public class DumpTruck extends Vehicle
         Pedestrian p = (Pedestrian)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Pedestrian.class);
         WheelBarrowWorker w = (WheelBarrowWorker)getOneObjectAtOffset(((int)speed) + getImage().getWidth()/2, 0, WheelBarrowWorker.class);
         if(w != null && w.getClass() == WheelBarrowWorker.class){
+            //Makes sure it does not hit a wheelbarrowworker actor
             return false;
         }
         else if (p != null){
@@ -40,8 +41,8 @@ public class DumpTruck extends Vehicle
      */
     public void act()
     {
-        //(getImage().getWidth()/2)
         if(!addedWheelBarrow){
+            //Adds 1 wheelbarrow actor infront of it
             if(getY() > getWorld().getHeight()/2){
                 getWorld().addObject (new WheelBarrowWorker (1, speed), 0, getY());
             }

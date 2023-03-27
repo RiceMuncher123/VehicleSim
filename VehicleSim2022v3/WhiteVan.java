@@ -34,6 +34,7 @@ public class WhiteVan extends Vehicle
     {
         Vehicle frontCheck = (Vehicle)getOneObjectAtOffset((int)speed*2 + getImage().getWidth()/2, 0, Vehicle.class);
         Vehicle backCheck = (Vehicle)getOneObjectAtOffset((int)speed*2 - getImage().getWidth()/2, 0, Vehicle.class);
+        //Checks whether it has alread robbed a car yet
         if(robberReleased == false){
 
             checkIsOnConcrete();

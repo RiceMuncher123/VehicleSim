@@ -33,6 +33,7 @@ public class GasTankTruck extends Vehicle
         checkHitPedestrian();
         Vehicle frontCheck = (Vehicle)getOneObjectAtOffset((int)speed + getImage().getWidth()/2, 0, Vehicle.class);
         Vehicle backCheck = (Vehicle)getOneObjectAtOffset((int)speed - getImage().getWidth()/2, 0, Vehicle.class);
+        //Checks whether there is a vehicle behind or infront and calls the explode method if so
         if(frontCheck != null || backCheck != null){
             explode();
         }
@@ -44,6 +45,7 @@ public class GasTankTruck extends Vehicle
     public void explode(){
         Explosion e = new Explosion();
         getWorld().addObject(e, getX(), getY());
+        //Uses 2 arraylists for vehicles and pedestrians and removes them from the world in a given range
         ArrayList<Pedestrian> pedestrianList = (ArrayList<Pedestrian>) getObjectsInRange​(e.getImage().getWidth()/2, Pedestrian.class);    
         ArrayList<Vehicle> vehicleList = (ArrayList<Vehicle>) getObjectsInRange​(e.getImage().getWidth(), Vehicle.class);
         for(Vehicle v : vehicleList){
