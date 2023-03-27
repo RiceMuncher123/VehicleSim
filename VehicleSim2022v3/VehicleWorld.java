@@ -12,6 +12,197 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * --> Includes grid <--> lane conversion method
  * --> Now starts with 1-way, 5 lane setup (easier)
  */
+
+/**
+ * Notes:
+ * The reference of "construction vehicles" refer to the following vehicles: Bull Dozer, Dump Truck, Cement Truck
+ * Pedestrian sounds was recorded using my voice (hehe)
+ * Concrete being in the air during tornado was intentional since it looked cool when it happens
+ * Tornado event spawns clouds which fade out with the tornado
+ * Can turn off global affects in Vehicle world by setting the variable globalAffectOn in the constructor to false
+ * Pedestrians sometimes screams to prevent overlap of audios and for other sounds to shine
+ * Put all the pedestrian images within each class to make it more modular instead of having 10 different pedestrian classes which do the same thing
+ * 
+ * 
+ * Bugs:
+ * Vehicles sometimes go into each other during lane switches for only temporarily (found a solution)
+ * White Vans only sometimes stops vehicles
+ * Very rarley vehicles just stop in midplace 
+ * Vehicles very rarley go off road after tornado event
+ * 
+ * 
+ * 
+ * 
+ * Features:
+ * 
+ * Vehicles:
+ * 
+ * Cement Truck:
+ * Spawns concrete on the lane which slows down other vehicles except other construction type vehicles
+ * 
+ * Dump Truck:
+ * Spawns a wheel barrow pedestrian which moves along with the vehicle
+ * 
+ * Bull Dozer
+ * A vehicle which knocks up other vehicles and pedestrians excluding construction vehicles
+ * 
+ * Gas Tank Truck
+ * A vehicle which when on hit, decides to detonate and explode erasing actors around in the world
+ * 
+ * White Van
+ * A vehicle which when is close to a vehicle on the same lane, stops that vehicle, spawns a robber actor which then kicks the driver out of the car and drives off with the stolen vehicle
+ * 
+ * Car:
+ * Changed the car's graphics to randomly predetermined colors rather than just a red color
+ * 
+ * 
+ * 
+ * 
+ * Pedestrians:
+ * J Walking Pedestrian
+ * A pedestrian who moves diagonally across the road
+ * 
+ * Wheel Barrow Worker
+ * A worker that moves along with the dump truck vehicle and picks dead pedestrians on the road and enters the dump truck once at the end of the road
+ * 
+ * Robber
+ * A pedestrian which robs a pedestrian's car and drives off with the said vehicle
+ * 
+ * 
+ * 
+ * 
+ * Global Affects:
+ * Tornado:
+ * An event which picks up all vehicles and spins them into the air and once gone, downs pedestrians and sends cars back to their original lane
+ * Also spawns clouds which fade out with the tornado
+ * 
+ * 
+ * Strong Wind:
+ * An event which deaccelerates vehicles and sends vehicles and pedestrians backwards out of the world
+ * 
+ * Sounds
+ * 
+ * Added sounds for global affects, vehicles, interations between actors, pedestrians
+ * 
+ * Pedestrian sounds was recorded using my voice (hehe)
+ * 
+ */
+
+/**
+ * Credits:
+ * 
+ * ArtWorks:
+ * 
+ * Backround:
+ * https://www.deviantart.com/animaltoonstudios20/art/Cartoon-City-Background-2-898691118
+ * Artist: AnimalToonStudios20
+ * Note: Edited it to make it fit
+ * 
+ * Car
+ * Notes: Edited the color with the starter image code
+ * 
+ * Cement Truck:
+ * https://www.pngegg.com/en/png-zywtq/download?height=80 
+ * Artist: N/A
+ * 
+ * BullDozer:
+ * https://pngtree.com/freepng/yellow-bulldozer-big-bulldozer-road-construction-bulldozer-cartoon-illustration_3873926.html
+ * Artist: N/A
+ * 
+ * GasTankTruck: 
+ * https://www.vecteezy.com/vector-art/8599569-cartoon-tank-truck-or-gas-truck
+ * Uploaded By: Graphics RF
+ * Note: Used this as a basis for what was actually used with editing
+ * 
+ * WhiteVan:
+ * https://www.vexels.com/png-svg/preview/258899/white-van-transport-flat
+ * Artist: N/A
+ * 
+ * Explosion:
+ * https://www.kindpng.com/imgv/hwxRJTw_explosion-clipart-png-png-download-cartoon-explosion-transparent/
+ * Uploaded By: Bhavyesh Kosadiya
+ * 
+ * Tornado
+ * https://www.cleanpng.com/png-tornado-icon-light-blue-tornado-454029/download-png.html
+ * Artist: N/A
+ * 
+ * Clouds
+ * https://www.nicepng.com/downpng/u2a9o0o0r5a9r5i1_cloud-dark-cloud-clipart/
+ * Artist: N/A
+ * 
+ * Blowing Clouds
+ * https://pngtree.com/freepng/cartoon-cloudy-gale-anthropomorphic-weather-wind-clipart_5847266.html
+ * Artist: dongcaiying
+ * 
+ * Pedestrian Images:
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&sex=female&clothes=Shortsleeve_red&hair=Pigtails_dark_brown&dress=Slit_dress_black&shoes=Shoes_lavender 
+ * 
+ * Authors: Authors: Benjamin K. Smith (BenCreating), bluecarrot16, TheraHedwig, Evert, MuffinElZangano, Durrani, Pierre Vigier (pvigier), ElizaWy, Matthew Krohn (makrohn), Johannes Sjölund (wulax), Stephen Challener (Redshrike), Radomir Dopieralski, Nila122, Joe White
+ * Note: Used this as a baseline for the other pedestrians. Sources to links of other pedestrians below.
+ * 
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&sex=teen&hair=Mop_blonde&clothes=Longsleeve_teal&legs=Pants_green&shoes=Boots_lavender&hat=none&accessory=none 
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&beard=Bigstache_blonde_2&clothes=Longsleeve_navy&legs=Pants_green&shoes=Slippers_pink&sex=teen&hair=Bob_sandy 
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&sex=muscular&legs=Wide_pants_black&shoes=Shoes_brown
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&sex=teen&hair=Spiked_liberty2_red&clothes=Longsleeve_teal&shoes=Boots_black&sash=Sash_blue  
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&sex=female&clothes=Longsleeve_rose&legs=Leggings_navy&shoes=Slippers_rose&hair=Shortknot_gray 
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&clothes=Longsleeve_orange&jacket=Collared_coat_black&legs=Pants_blue&shoes=Shoes_sky&beard=Beard_gold&hair=Loose_gold
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_child_light&sex=child&clothes=Child_shirts_blue&legs=Child_pants_red 
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&hair=Pixie_green&jacket=Collared_coat_brown_striped&earring=Earring_gold&legs=Pants_blue&shoes=Shoes_pink 
+ * 
+ * https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&sex=female&dress=Slit_dress_blue&vest=none&legs=none&shoes=Slippers_black&hair=Xlong_blonde 
+ * 
+ * 
+ * 
+ * 
+ * Sounds:
+ * 
+ * Road Ambience
+ * https://www.zapsplat.com/music/city-ambience-busy-road-cars-trucks-and-motorcycles-passing-police-siren-horn-honks-occasional-people-mekong-delta-vietnam-2/ 
+ * Credits FreeToUseSounds
+ *
+ * Tornado
+ * https://www.zapsplat.com/music/inside-tornado-strong-wind-destruction/ 
+ * Credits: PMSFK
+ *
+ * Car Honk
+ * https://www.zapsplat.com/music/car-horn-2x-short-beeps-2017-toyota-corolla/ 
+ * Credits: Zapslat
+ * 
+ * Strong winds event sound
+ * https://www.zapsplat.com/music/wind-strong-stormy-wind-through-trees-2/
+ * Credits: ZapSlat
+ * 
+ * Explosion
+ * https://www.zapsplat.com/music/8bit-explosion-bomb-boom-or-blast-cannon-retro-old-school-classic-cartoon/ 
+ * Credits:  Stock Media
+ * Note: Used Audacity to fix the error
+ * 
+ * Car Accelerate
+ * https://www.zapsplat.com/music/car-accelerate-away-fast-past-2/ 
+ * 
+ * Many Cars Honking during tornado event
+ * https://soundbible.com/61-City-Car-Horn.html 
+ * Credits: N/A
+ * 
+ * 
+ * 
+ * 
+ * Code Sources:
+ * 
+ * Code for the effects and subclasses
+ * Credits: Jordan Cohen
+ * 
+ * 
+ */
+
 public class VehicleWorld extends World
 {
     private GreenfootImage background;
@@ -32,13 +223,14 @@ public class VehicleWorld extends World
     private boolean globalAffectOn;
     protected boolean screamActive = true;
     protected int screamCounter = 0;
-    
+
     private GreenfootSound tornadoSound;
     private GreenfootSound roadAmbience;
     private GreenfootSound manyCarsHonk;
     private GreenfootSound strongWindSound;
     private GreenfootSound GasTankExplosion;
     private GreenfootSound concreteLay;
+    private GreenfootSound PedestrianPleadForHelp;
 
     /**
      * Constructor for objects of class MyWorld.
@@ -61,8 +253,9 @@ public class VehicleWorld extends World
         manyCarsHonk = new GreenfootSound("ManyCarsHonking.mp3");
         strongWindSound = new GreenfootSound("StrongWinds.mp3");
         GasTankExplosion = new GreenfootSound("Explosion.mp3");
+        PedestrianPleadForHelp = new GreenfootSound("PedestrianSound/GotRobbed.mp3");
         // Set critical variables
-        globalAffectOn = false;
+        globalAffectOn = true;
         laneCount = 6;
         laneHeight = 48;
         spaceBetweenLanes = 6;
@@ -88,10 +281,12 @@ public class VehicleWorld extends World
     public void setScreamTrue(){
         screamActive = true;
     }
+
     public void setScreamFalse(){
         screamCounter = 0;
         screamActive = false;
     }
+
     public boolean getScreamStatus(){
         return screamActive;
     }
@@ -223,8 +418,17 @@ public class VehicleWorld extends World
     public void playExplosion(){
         GasTankExplosion.playLoop();
     }
+
     public void stopExplosion(){
         GasTankExplosion.stop();
+    }
+
+    public void pedestrianPlead(){
+        PedestrianPleadForHelp.play();
+    }
+
+    public int getActs(){
+        return acts;
     }
 
     /**
@@ -235,10 +439,6 @@ public class VehicleWorld extends World
      *  @param lane the lane number (zero-indexed)
      *  @return int the y position of the lane's center, or -1 if invalid
      */
-    public int getActs(){
-        return acts;
-    }
-
     public int getLaneY (int lane){
         if (lane < lanePositionsY.length){
             return lanePositionsY[lane];

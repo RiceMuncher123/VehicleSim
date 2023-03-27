@@ -13,6 +13,7 @@ public class Robber extends Pedestrian
      * the 'Act' or 'Run' button gets pressed in the environment.
      */
     protected int actCounter;
+
     public Robber(int direction){
         super(direction);
         image = new GreenfootImage("images/Robbera.png");
@@ -22,22 +23,24 @@ public class Robber extends Pedestrian
 
     public void act()
     {
-        if(actCounter == 30){
+        if(actCounter == 120){
             EnterVehicle();
         }
         actCounter++;
     }
 
-    
 
     public void EnterVehicle(){
         getWorld().addObject(new Pedestrian1(1), getX(), getY());
+        VehicleWorld world = (VehicleWorld) getWorld();
+        world.pedestrianPlead();
         getWorld().removeObject(this);
     }
-    
+
     public void takeAStep(){
         //Not using this but abstract 
     }
+
     public void knockDown () {
         //dont want it to knock down so overide and empty
     }

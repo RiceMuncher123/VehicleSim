@@ -7,6 +7,4 @@ comment2.params=
 comment2.target=void\ act()
 comment3.params=
 comment3.target=boolean\ checkHitPedestrian()
-comment4.params=
-comment4.target=void\ spawnRobber()
-numComments=5
+numComments=4

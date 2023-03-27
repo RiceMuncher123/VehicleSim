@@ -85,7 +85,5 @@ public class WhiteVan extends Vehicle
         return false;
     }
 
-    public void spawnRobber(){
-
-    }
+   
 }
